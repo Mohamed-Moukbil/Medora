@@ -1,0 +1,13 @@
+# Next.js
+.next/
+
+# Dependencies
+node_modules/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Build
+out/
