@@ -8,42 +8,48 @@ import crypto from 'crypto'
 import { z } from 'zod'
 
 export async function registerUser(formData: FormData) {
-  const name = formData.get('name') as string
-  const email = formData.get('email') as string
-  const password = formData.get('password') as string
-  const confirmPassword = formData.get('confirmPassword') as string
+  try {
+    const name = formData.get('name') as string
+    const email = formData.get('email') as string
+    const password = formData.get('password') as string
+    const confirmPassword = formData.get('confirmPassword') as string
 
-  if (password !== confirmPassword) throw new Error('Passwords do not match')
+    if (password !== confirmPassword) return { error: 'Passwords do not match' }
 
-  const schema = z.object({
-    name: z.string().min(2).max(100),
-    email: z.string().email(),
-    password: z.string().min(6),
-  })
+    const schema = z.object({
+      name: z.string().min(2).max(100),
+      email: z.string().email(),
+      password: z.string().min(6),
+    })
 
-  const parsed = schema.parse({ name, email, password })
+    const parsed = schema.parse({ name, email, password })
 
-  const ip = getClientIp()
-  const rl = await rateLimit(`register:${ip}`, { max: 3, windowMs: 3_600_000 })
-  if (!rl.success) throw new Error('Too many attempts. Try again later.')
+    const ip = getClientIp()
+    const rl = await rateLimit(`register:${ip}`, { max: 3, windowMs: 3_600_000 })
+    if (!rl.success) return { error: 'Too many attempts. Try again later.' }
 
-  const existing = await prisma.user.findUnique({ where: { email: parsed.email } })
-  if (existing) throw new Error('Email already in use')
+    const existing = await prisma.user.findUnique({ where: { email: parsed.email } })
+    if (existing) return { error: 'Email already in use' }
 
-  const hashed = await bcrypt.hash(parsed.password, 12)
+    const hashed = await bcrypt.hash(parsed.password, 12)
 
-  const user = await prisma.user.create({
-    data: { name: parsed.name, email: parsed.email, password: hashed },
-  })
+    const user = await prisma.user.create({
+      data: { name: parsed.name, email: parsed.email, password: hashed },
+    })
 
-  const token = crypto.randomUUID()
-  const expires = new Date(Date.now() + 24 * 60 * 60 * 1000)
+    const token = crypto.randomUUID()
+    const expires = new Date(Date.now() + 24 * 60 * 60 * 1000)
 
-  await prisma.emailVerificationToken.create({
-    data: { token, userId: user.id, expires },
-  })
+    await prisma.emailVerificationToken.create({
+      data: { token, userId: user.id, expires },
+    })
 
-  await sendVerificationEmail(parsed.email, token)
+    await sendVerificationEmail(parsed.email, token)
+
+    return { success: true }
+  } catch {
+    return { error: 'Something went wrong' }
+  }
 }
 
 export async function checkEmailStatus(email: string) {

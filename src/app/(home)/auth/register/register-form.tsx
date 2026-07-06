@@ -30,14 +30,13 @@ export function RegisterForm() {
       return
     }
 
-    try {
-      await registerUser(formData)
+    const result = await registerUser(formData)
+    if (result?.error) {
+      toast.error(result.error)
+    } else {
       setRegisteredEmail(formData.get('email') as string)
-    } catch (e: any) {
-      toast.error(e.message || 'Failed to create account')
-    } finally {
-      setIsLoading(false)
     }
+    setIsLoading(false)
   }
 
   if (registeredEmail) {
