@@ -57,7 +57,7 @@ export function SignInForm() {
         }
         if (status.exists && !status.verified) {
           toast.error('Please verify your email before signing in', {
-            action: { label: 'Resend', onClick: () => { detailsRef.current?.open = true } },
+            action: { label: 'Resend', onClick: () => { detailsRef.current && (detailsRef.current.open = true) } },
           })
         } else {
           toast.error('Invalid email or password')
