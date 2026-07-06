@@ -11,3 +11,17 @@ node_modules/
 
 # Build
 out/
+
+# Auto-generated
+next-env.d.ts
+*.tsbuildinfo
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db

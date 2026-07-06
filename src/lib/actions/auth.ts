@@ -11,10 +11,9 @@ export async function registerUser(formData: FormData) {
   const name = formData.get('name') as string
   const email = formData.get('email') as string
   const password = formData.get('password') as string
+  const confirmPassword = formData.get('confirmPassword') as string
 
-  const ip = getClientIp()
-  const rl = await rateLimit(`register:${ip}`, { max: 3, windowMs: 3_600_000 })
-  if (!rl.success) throw new Error('Too many attempts. Try again later.')
+  if (password !== confirmPassword) throw new Error('Passwords do not match')
 
   const schema = z.object({
     name: z.string().min(2).max(100),
@@ -24,10 +23,13 @@ export async function registerUser(formData: FormData) {
 
   const parsed = schema.parse({ name, email, password })
 
+  const ip = getClientIp()
+  const rl = await rateLimit(`register:${ip}`, { max: 3, windowMs: 3_600_000 })
+  if (!rl.success) throw new Error('Too many attempts. Try again later.')
+
   const existing = await prisma.user.findUnique({ where: { email: parsed.email } })
   if (existing) throw new Error('Email already in use')
 
-  const { default: bcrypt } = await import('bcryptjs')
   const hashed = await bcrypt.hash(parsed.password, 12)
 
   const user = await prisma.user.create({

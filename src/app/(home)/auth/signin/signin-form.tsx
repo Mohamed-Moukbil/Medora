@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { signIn } from 'next-auth/react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { resendVerificationEmail, checkEmailStatus } from '@/lib/actions/auth'
@@ -16,6 +16,7 @@ export function SignInForm() {
   const searchParams = useSearchParams()
   const [isLoading, setIsLoading] = useState(false)
   const [resending, setResending] = useState<string | null>(null)
+  const detailsRef = useRef<HTMLDetailsElement>(null)
 
   async function handleResend(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -36,30 +37,42 @@ export function SignInForm() {
     e.preventDefault()
     setIsLoading(true)
 
-    const formData = new FormData(e.currentTarget)
-    const email = formData.get('email') as string
-    const result = await signIn('credentials', {
-      email,
-      password: formData.get('password'),
-      redirect: false,
-    })
+    try {
+      const formData = new FormData(e.currentTarget)
+      const email = formData.get('email') as string
+      const result = await signIn('credentials', {
+        email,
+        password: formData.get('password'),
+        redirect: false,
+      })
 
-    if (result?.error) {
-      const status = await checkEmailStatus(email)
-      if (status.exists && !status.verified) {
-        toast.error('Please verify your email before signing in', {
-          action: { label: 'Resend', onClick: () => { document.querySelector<HTMLDetailsElement>('details')!.open = true } },
-        })
-      } else {
-        toast.error('Invalid email or password')
+      if (result?.error) {
+        let status
+        try {
+          status = await checkEmailStatus(email)
+        } catch {
+          toast.error('Unable to verify account status. Please try again.')
+          setIsLoading(false)
+          return
+        }
+        if (status.exists && !status.verified) {
+          toast.error('Please verify your email before signing in', {
+            action: { label: 'Resend', onClick: () => { detailsRef.current?.open = true } },
+          })
+        } else {
+          toast.error('Invalid email or password')
+        }
+        setIsLoading(false)
+        return
       }
-      setIsLoading(false)
-      return
-    }
 
-    const callbackUrl = searchParams.get('callbackUrl') || '/'
-    router.push(callbackUrl)
-    router.refresh()
+      const callbackUrl = searchParams.get('callbackUrl') || '/'
+      router.push(callbackUrl)
+      router.refresh()
+    } catch {
+      toast.error('Something went wrong. Please try again.')
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -117,7 +130,7 @@ export function SignInForm() {
           </Link>
         </p>
 
-        <details className="mt-4">
+        <details ref={detailsRef} className="mt-4">
           <summary className="cursor-pointer text-center text-xs text-muted-foreground hover:text-foreground">
             Resend verification email
           </summary>
