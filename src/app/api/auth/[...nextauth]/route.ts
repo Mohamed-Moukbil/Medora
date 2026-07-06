@@ -15,7 +15,7 @@ export async function POST(request: Request, context: any) {
     request.headers.get('x-real-ip') ||
     'unknown'
 
-  const rl = rateLimit(`auth-signin:${ip}`, { max: 10, windowMs: 60_000 })
+  const rl = await rateLimit(`auth-signin:${ip}`, { max: 10, windowMs: 60_000 })
   if (!rl.success) {
     return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
   }
