@@ -13,7 +13,7 @@ export async function registerUser(formData: FormData) {
   const password = formData.get('password') as string
 
   const ip = getClientIp()
-  const rl = rateLimit(`register:${ip}`, { max: 3, windowMs: 3_600_000 })
+  const rl = await rateLimit(`register:${ip}`, { max: 3, windowMs: 3_600_000 })
   if (!rl.success) throw new Error('Too many attempts. Try again later.')
 
   const schema = z.object({
@@ -46,7 +46,7 @@ export async function registerUser(formData: FormData) {
 
 export async function checkEmailStatus(email: string) {
   const ip = getClientIp()
-  const rl = rateLimit(`check-email:${ip}`, { max: 20, windowMs: 60_000 })
+  const rl = await rateLimit(`check-email:${ip}`, { max: 20, windowMs: 60_000 })
   if (!rl.success) throw new Error('Too many requests. Try again later.')
 
   if (!email) return { exists: false, verified: false }
@@ -87,7 +87,7 @@ export async function verifyEmail(token: string) {
 
 export async function resendVerificationEmail(email: string) {
   const ip = getClientIp()
-  const rl = rateLimit(`verify:${email}:${ip}`, { max: 3, windowMs: 900_000 })
+  const rl = await rateLimit(`verify:${email}:${ip}`, { max: 3, windowMs: 900_000 })
   if (!rl.success) throw new Error('Too many requests. Try again later.')
 
   const user = await prisma.user.findUnique({ where: { email } })
@@ -118,7 +118,7 @@ export async function submitContactForm(formData: FormData) {
   if (!name || !email || !message) throw new Error('All fields are required')
 
   const ip = getClientIp()
-  const rl = rateLimit(`contact:${ip}`, { max: 5, windowMs: 900_000 })
+  const rl = await rateLimit(`contact:${ip}`, { max: 5, windowMs: 900_000 })
   if (!rl.success) throw new Error('Too many messages. Please try again later.')
 
   await prisma.contactSubmission.create({ data: { name, email, message } })
@@ -146,7 +146,7 @@ export async function markContactRead(id: string) {
 
 export async function requestPasswordReset(email: string) {
   const ip = getClientIp()
-  const rl = rateLimit(`reset:${email}:${ip}`, { max: 3, windowMs: 3_600_000 })
+  const rl = await rateLimit(`reset:${email}:${ip}`, { max: 3, windowMs: 3_600_000 })
   if (!rl.success) throw new Error('Too many requests. Try again later.')
 
   const user = await prisma.user.findUnique({ where: { email } })

@@ -1,23 +1,10 @@
+import { Redis } from '@upstash/redis'
 import { headers } from 'next/headers'
 
-interface RateLimitEntry {
-  count: number
-  resetAt: number
-}
-
-const store = new Map<string, RateLimitEntry>()
-
-const CLEANUP_INTERVAL = 60_000
-let lastCleanup = Date.now()
-
-function cleanup() {
-  const now = Date.now()
-  if (now - lastCleanup < CLEANUP_INTERVAL) return
-  lastCleanup = now
-  store.forEach((entry, key) => {
-    if (now > entry.resetAt) store.delete(key)
-  })
-}
+const redis = new Redis({
+  url: process.env.UPSTASH_REDIS_REST_URL!,
+  token: process.env.UPSTASH_REDIS_REST_TOKEN!,
+})
 
 export function getClientIp(): string {
   const headersList = headers()
@@ -28,25 +15,23 @@ export function getClientIp(): string {
   )
 }
 
-export function rateLimit(
+export async function rateLimit(
   key: string,
   { max = 5, windowMs = 60_000 }: { max?: number; windowMs?: number } = {}
-): { success: true; remaining: number } | { success: false; remaining: 0; retryAfter: number } {
-  cleanup()
-
+): Promise<{ success: true; remaining: number } | { success: false; remaining: 0; retryAfter: number }> {
   const now = Date.now()
-  const entry = store.get(key)
+  const windowKey = `${key}:${Math.floor(now / windowMs)}`
 
-  if (!entry || now > entry.resetAt) {
-    store.set(key, { count: 1, resetAt: now + windowMs })
-    return { success: true, remaining: max - 1 }
+  const count = await redis.incr(windowKey)
+
+  if (count === 1) {
+    await redis.expire(windowKey, Math.ceil(windowMs / 1000))
   }
 
-  if (entry.count >= max) {
-    const retryAfter = Math.ceil((entry.resetAt - now) / 1000)
-    return { success: false, remaining: 0, retryAfter }
+  if (count > max) {
+    const ttl = await redis.ttl(windowKey)
+    return { success: false, remaining: 0, retryAfter: Math.max(1, ttl) }
   }
 
-  entry.count++
-  return { success: true, remaining: max - entry.count }
+  return { success: true, remaining: max - count }
 }
