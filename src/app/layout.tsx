@@ -6,6 +6,7 @@ const inter = Inter({ subsets: ['latin'], variable: '--font-sans', display: 'swa
 const jetbrainsMono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-mono', display: 'swap' })
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://medora.vip'),
   title: {
     default: 'Medora - Mathematical Proofs & Theorems',
     template: '%s | Medora',

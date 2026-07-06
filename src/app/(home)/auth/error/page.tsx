@@ -1,5 +1,6 @@
 'use client'
 
+import { Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -18,7 +19,7 @@ const errorMessages: Record<string, { title: string; message: string }> = {
   SessionRequired: { title: 'Session Required', message: 'Please sign in to access this page.' },
 }
 
-export default function AuthErrorPage() {
+function AuthErrorContent() {
   const searchParams = useSearchParams()
   const error = searchParams.get('error') || 'default'
   const { title, message } = errorMessages[error] || { title: 'Authentication Error', message: 'An unexpected authentication error occurred.' }
@@ -45,5 +46,13 @@ export default function AuthErrorPage() {
         </Card>
       </div>
     </div>
+  )
+}
+
+export default function AuthErrorPage() {
+  return (
+    <Suspense fallback={<div className="container mx-auto flex min-h-[calc(100vh-8rem)] items-center justify-center"><p className="text-muted-foreground">Loading...</p></div>}>
+      <AuthErrorContent />
+    </Suspense>
   )
 }
