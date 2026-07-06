@@ -22,7 +22,6 @@ export default async function sitemap() {
       select: { slug: true, updatedAt: true },
     }),
     prisma.subject.findMany({
-      select: { slug: true, updatedAt: true },
       include: {
         subSubjects: { select: { slug: true, updatedAt: true } },
       },
