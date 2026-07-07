@@ -15,6 +15,14 @@ interface MathMarkdownProps {
   className?: string
 }
 
+function normalizeDelimiters(content: string): string {
+  return content
+    .replace(/\\\[/g, '$$$$')
+    .replace(/\\\]/g, '$$$$')
+    .replace(/\\\(/g, '$$')
+    .replace(/\\\)/g, '$$')
+}
+
 const components = {
   code: ({ node, ...props }: any) => {
     const match = /language-(\w+)/.exec(node.properties.className?.[0] || '')
@@ -59,7 +67,7 @@ export function MathMarkdown({ content, className }: MathMarkdownProps) {
           [rehypeAutolinkHeadings, { behavior: 'wrap' }],
         ]}
       >
-        {content}
+        {normalizeDelimiters(content)}
       </ReactMarkdown>
     </div>
   )
