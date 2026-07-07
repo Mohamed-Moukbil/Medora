@@ -41,6 +41,8 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Medora - Mathematical Proofs & Theorems',
     description: 'A beautiful platform for sharing, discovering, and discussing mathematical proofs with LaTeX rendering.',
+    site: '@Medora_Web',
+    creator: '@Medora_Web',
     images: ['/og-image.png'],
   },
   verification: {

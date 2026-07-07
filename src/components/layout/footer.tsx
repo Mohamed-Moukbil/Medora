@@ -21,7 +21,7 @@ export function Footer() {
               <a href="https://github.com/Mohamed-Moukbil/Medora" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground transition-colors" aria-label="GitHub">
                 <Github className="h-5 w-5" />
               </a>
-              <a href="https://twitter.com/medora" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground transition-colors" aria-label="Twitter">
+              <a href="https://x.com/Medora_Web" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground transition-colors" aria-label="Twitter">
                 <Twitter className="h-5 w-5" />
               </a>
               <a href="mailto:medora.vip" className="text-muted-foreground hover:text-foreground transition-colors" aria-label="Email">
