@@ -1,5 +1,5 @@
 import nodemailer from 'nodemailer'
-import { passwordResetTemplate, verificationTemplate, contactTemplate } from './email-templates'
+import { passwordResetTemplate, verificationTemplate, contactTemplate } from './email/templates'
 
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,

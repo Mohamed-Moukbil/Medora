@@ -4,6 +4,8 @@ import Link from 'next/link'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { getProofBySlug, getComments, getRelatedProofs, isProofSaved } from '@/lib/actions/proofs'
+
+export const revalidate = 60
 import { MathMarkdown } from '@/components/proof/math-markdown'
 import { ProofComments } from './proof-comments'
 import { ProofCard, type ProofCardProof } from '@/components/proof/proof-card'
