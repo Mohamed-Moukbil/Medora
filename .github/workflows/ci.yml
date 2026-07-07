@@ -20,6 +20,8 @@ jobs:
 
       - run: npm ci --legacy-peer-deps
 
+      - run: npx prisma generate
+
       - run: npm run lint
 
       - run: npm run typecheck
@@ -38,3 +40,5 @@ jobs:
           SMTP_FROM: Test <test@test.com>
           GITHUB_ID: ""
           GITHUB_SECRET: ""
+          GOOGLE_ID: ""
+          GOOGLE_SECRET: ""
