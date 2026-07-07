@@ -48,11 +48,15 @@ export function AdminPanel({ proofs, messages }: { proofs: Proof[]; messages?: {
   async function handleVerify(proofId: string, action: 'approve' | 'reject') {
     setLoadingId(proofId)
     try {
-      await verifyProof(proofId, action)
-      toast.success(action === 'approve' ? 'Proof approved!' : 'Proof rejected')
-      router.refresh()
-    } catch (e: any) {
-      toast.error(e.message || 'Failed to process proof')
+      const result = await verifyProof(proofId, action)
+      if (result?.error) {
+        toast.error(result.error)
+      } else {
+        toast.success(action === 'approve' ? 'Proof approved!' : 'Proof rejected')
+        router.refresh()
+      }
+    } catch {
+      toast.error('Failed to process proof')
     } finally {
       setLoadingId(null)
     }
@@ -237,11 +241,15 @@ export function AdminPanel({ proofs, messages }: { proofs: Proof[]; messages?: {
                         if (!confirm('Delete this proof permanently?')) return
                         setLoadingId(proof.id)
                         try {
-                          await deleteProof(proof.id)
-                          toast.success('Proof deleted')
-                          router.refresh()
-                        } catch (e: any) {
-                          toast.error(e.message || 'Failed to delete')
+                          const result = await deleteProof(proof.id)
+                          if (result?.error) {
+                            toast.error(result.error)
+                          } else {
+                            toast.success('Proof deleted')
+                            router.refresh()
+                          }
+                        } catch {
+                          toast.error('Failed to delete')
                         } finally {
                           setLoadingId(null)
                         }

@@ -30,12 +30,16 @@ export function ResetPasswordForm({ token }: { token: string }) {
     }
 
     try {
-      await resetPassword(token, password)
-      setSuccess(true)
-      toast.success('Password reset successfully!')
-      setTimeout(() => router.push('/auth/signin'), 2000)
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to reset password')
+      const result = await resetPassword(token, password)
+      if (result?.error) {
+        toast.error(result.error)
+      } else {
+        setSuccess(true)
+        toast.success('Password reset successfully!')
+        setTimeout(() => router.push('/auth/signin'), 2000)
+      }
+    } catch {
+      toast.error('Failed to reset password')
     } finally {
       setIsLoading(false)
     }

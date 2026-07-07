@@ -17,11 +17,15 @@ export default function ContactPage() {
     setIsSubmitting(true)
 
     try {
-      await submitContactForm(new FormData(e.currentTarget))
-      toast.success('Message sent! We will get back to you soon.')
-      ;(e.target as HTMLFormElement).reset()
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to send message')
+      const result = await submitContactForm(new FormData(e.currentTarget))
+      if (result?.error) {
+        toast.error(result.error)
+      } else {
+        toast.success('Message sent! We will get back to you soon.')
+        ;(e.target as HTMLFormElement).reset()
+      }
+    } catch {
+      toast.error('Failed to send message')
     } finally {
       setIsSubmitting(false)
     }

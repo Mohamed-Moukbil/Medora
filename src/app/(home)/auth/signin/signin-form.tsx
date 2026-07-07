@@ -24,10 +24,14 @@ export function SignInForm() {
     if (!email) return
     setResending(email)
     try {
-      await resendVerificationEmail(email)
-      toast.success('Verification email sent! Check your inbox.')
-    } catch (err: any) {
-      toast.error(err.message || 'Could not send verification email')
+      const result = await resendVerificationEmail(email)
+      if (result?.error) {
+        toast.error(result.error)
+      } else {
+        toast.success('Verification email sent! Check your inbox.')
+      }
+    } catch {
+      toast.error('Could not send verification email')
     } finally {
       setResending(null)
     }
@@ -47,11 +51,9 @@ export function SignInForm() {
       })
 
       if (result?.error) {
-        let status
-        try {
-          status = await checkEmailStatus(email)
-        } catch {
-          toast.error('Unable to verify account status. Please try again.')
+        const status = await checkEmailStatus(email)
+        if (status?.error) {
+          toast.error(status.error)
           setIsLoading(false)
           return
         }

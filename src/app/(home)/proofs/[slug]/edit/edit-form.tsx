@@ -37,12 +37,16 @@ export function EditProofForm({ proof, subjects }: { proof: { id: string; slug: 
   async function handleSubmit(formData: FormData) {
     setIsSubmitting(true)
     try {
-      await updateProof(proof.id, formData)
-      toast.success('Proof updated successfully!')
-      router.push(`/proofs/${proof.slug}`)
-      router.refresh()
-    } catch (e: any) {
-      toast.error(e.message || 'Failed to update proof')
+      const result = await updateProof(proof.id, formData)
+      if (result?.error) {
+        toast.error(result.error)
+      } else {
+        toast.success('Proof updated successfully!')
+        router.push(`/proofs/${proof.slug}`)
+        router.refresh()
+      }
+    } catch {
+      toast.error('Failed to update proof')
     } finally {
       setIsSubmitting(false)
     }

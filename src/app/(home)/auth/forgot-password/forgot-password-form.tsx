@@ -21,9 +21,13 @@ export function ForgotPasswordForm() {
     const email = formData.get('email') as string
 
     try {
-      await requestPasswordReset(email)
-      setSent(true)
-      toast.success('If an account exists, a reset link has been sent')
+      const result = await requestPasswordReset(email)
+      if (result?.error) {
+        toast.error(result.error)
+      } else {
+        setSent(true)
+        toast.success('If an account exists, a reset link has been sent')
+      }
     } catch {
       toast.error('Something went wrong. Please try again.')
     } finally {

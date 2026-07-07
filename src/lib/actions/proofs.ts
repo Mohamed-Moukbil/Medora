@@ -169,7 +169,7 @@ export async function getComments(proofId: string) {
 
 export async function createProof(formData: FormData) {
   const session = await getServerSession(authOptions)
-  if (!session?.user?.id) throw new Error('Unauthorized')
+  if (!session?.user?.id) return { error: 'Unauthorized' }
 
   const data = {
     title: formData.get('title') as string,
@@ -206,18 +206,19 @@ export async function createProof(formData: FormData) {
 
   revalidatePath('/proofs')
   revalidatePath('/dashboard/submissions')
+  return { success: true }
 }
 
 export async function updateProof(proofId: string, formData: FormData) {
   const session = await getServerSession(authOptions)
-  if (!session?.user?.id) throw new Error('Unauthorized')
+  if (!session?.user?.id) return { error: 'Unauthorized' }
 
   const proof = await prisma.proof.findUnique({ where: { id: proofId }, select: { id: true, slug: true, authorId: true } })
-  if (!proof) throw new Error('Proof not found')
+  if (!proof) return { error: 'Proof not found' }
 
   const isOwner = proof.authorId === session.user.id
   const isMod = (session.user as any).role !== 'USER'
-  if (!isOwner && !isMod) throw new Error('Unauthorized')
+  if (!isOwner && !isMod) return { error: 'Unauthorized' }
 
   const data = {
     title: formData.get('title') as string,
@@ -252,11 +253,12 @@ export async function updateProof(proofId: string, formData: FormData) {
   revalidatePath('/proofs')
   revalidatePath('/dashboard/submissions')
   revalidatePath('/admin')
+  return { success: true }
 }
 
 export async function createComment(proofId: string, content: string, parentId?: string) {
   const session = await getServerSession(authOptions)
-  if (!session?.user?.id) throw new Error('Unauthorized')
+  if (!session?.user?.id) return { error: 'Unauthorized' }
 
   await prisma.comment.create({
     data: {
@@ -268,33 +270,36 @@ export async function createComment(proofId: string, content: string, parentId?:
   })
 
   revalidatePath(`/proofs/${proofId}`)
+  return { success: true }
 }
 
 export async function editComment(commentId: string, content: string) {
   const session = await getServerSession(authOptions)
-  if (!session?.user?.id) throw new Error('Unauthorized')
+  if (!session?.user?.id) return { error: 'Unauthorized' }
 
   const comment = await prisma.comment.findUnique({ where: { id: commentId } })
-  if (!comment || comment.authorId !== session.user.id) throw new Error('Unauthorized')
+  if (!comment || comment.authorId !== session.user.id) return { error: 'Unauthorized' }
 
   await prisma.comment.update({ where: { id: commentId }, data: { content } })
   revalidatePath(`/proofs/${comment.proofId}`)
+  return { success: true }
 }
 
 export async function deleteComment(commentId: string) {
   const session = await getServerSession(authOptions)
-  if (!session?.user?.id) throw new Error('Unauthorized')
+  if (!session?.user?.id) return { error: 'Unauthorized' }
 
   const comment = await prisma.comment.findUnique({ where: { id: commentId } })
-  if (!comment || comment.authorId !== session.user.id) throw new Error('Unauthorized')
+  if (!comment || comment.authorId !== session.user.id) return { error: 'Unauthorized' }
 
   await prisma.comment.delete({ where: { id: commentId } })
   revalidatePath(`/proofs/${comment.proofId}`)
+  return { success: true }
 }
 
 export async function getAllProofs() {
   const session = await getServerSession(authOptions)
-  if (!session?.user || (session.user as any).role === 'USER') throw new Error('Unauthorized')
+  if (!session?.user || (session.user as any).role === 'USER') return []
 
   return prisma.proof.findMany({
     orderBy: { createdAt: 'desc' },
@@ -308,7 +313,7 @@ export async function getAllProofs() {
 
 export async function getPendingProofs() {
   const session = await getServerSession(authOptions)
-  if (!session?.user || (session.user as any).role === 'USER') throw new Error('Unauthorized')
+  if (!session?.user || (session.user as any).role === 'USER') return []
 
   return prisma.proof.findMany({
     where: { type: 'PENDING' },
@@ -323,7 +328,7 @@ export async function getPendingProofs() {
 
 export async function verifyProof(proofId: string, action: 'approve' | 'reject') {
   const session = await getServerSession(authOptions)
-  if (!session?.user || (session.user as any).role === 'USER') throw new Error('Unauthorized')
+  if (!session?.user || (session.user as any).role === 'USER') return { error: 'Unauthorized' }
 
   const type = action === 'approve' ? 'COMMUNITY' : 'REJECTED'
 
@@ -339,16 +344,18 @@ export async function verifyProof(proofId: string, action: 'approve' | 'reject')
 
   revalidatePath('/admin')
   revalidatePath('/proofs')
+  return { success: true }
 }
 
 export async function deleteProof(proofId: string) {
   const session = await getServerSession(authOptions)
-  if (!session?.user || (session.user as any).role === 'USER') throw new Error('Unauthorized')
+  if (!session?.user || (session.user as any).role === 'USER') return { error: 'Unauthorized' }
 
   await prisma.proof.delete({ where: { id: proofId } })
 
   revalidatePath('/admin')
   revalidatePath('/proofs')
+  return { success: true }
 }
 
 export async function getUserStats() {
@@ -426,7 +433,7 @@ export async function getUserProfileProofs(id: string) {
 
 export async function updateProfile(formData: FormData) {
   const session = await getServerSession(authOptions)
-  if (!session?.user?.id) throw new Error('Unauthorized')
+  if (!session?.user?.id) return { error: 'Unauthorized' }
 
   const name = formData.get('name') as string
   const image = formData.get('image') as string
@@ -441,4 +448,5 @@ export async function updateProfile(formData: FormData) {
 
   revalidatePath('/dashboard')
   revalidatePath('/dashboard/settings')
+  return { success: true }
 }

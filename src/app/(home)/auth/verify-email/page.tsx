@@ -29,9 +29,8 @@ export default async function VerifyEmailPage({
     )
   }
 
-  try {
-    await verifyEmail(token)
-  } catch {
+  const result = await verifyEmail(token)
+  if (result?.error) {
     return (
       <div className="container mx-auto flex min-h-[calc(100vh-8rem)] items-center justify-center px-4 py-12">
         <Card className="w-full max-w-md">

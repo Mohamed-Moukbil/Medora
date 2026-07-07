@@ -55,7 +55,7 @@ export async function registerUser(formData: FormData) {
 export async function checkEmailStatus(email: string) {
   const ip = getClientIp()
   const rl = await rateLimit(`check-email:${ip}`, { max: 20, windowMs: 60_000 })
-  if (!rl.success) throw new Error('Too many requests. Try again later.')
+  if (!rl.success) return { error: 'Too many requests. Try again later.' }
 
   if (!email) return { exists: false, verified: false }
   const user = await prisma.user.findUnique({
@@ -68,7 +68,7 @@ export async function checkEmailStatus(email: string) {
 
 export async function verifyEmail(token: string) {
   if (!token || typeof token !== 'string') {
-    throw new Error('Invalid token')
+    return { error: 'Invalid token' }
   }
 
   const verificationToken = await prisma.emailVerificationToken.findUnique({
@@ -77,7 +77,7 @@ export async function verifyEmail(token: string) {
   })
 
   if (!verificationToken || verificationToken.used || verificationToken.expires < new Date()) {
-    throw new Error('Invalid or expired verification link')
+    return { error: 'Invalid or expired verification link' }
   }
 
   await prisma.user.update({
@@ -96,11 +96,11 @@ export async function verifyEmail(token: string) {
 export async function resendVerificationEmail(email: string) {
   const ip = getClientIp()
   const rl = await rateLimit(`verify:${email}:${ip}`, { max: 3, windowMs: 900_000 })
-  if (!rl.success) throw new Error('Too many requests. Try again later.')
+  if (!rl.success) return { error: 'Too many requests. Try again later.' }
 
   const user = await prisma.user.findUnique({ where: { email } })
-  if (!user) throw new Error('No account found with this email')
-  if (user.emailVerified) throw new Error('Email is already verified')
+  if (!user) return { error: 'No account found with this email' }
+  if (user.emailVerified) return { error: 'Email is already verified' }
 
   await prisma.emailVerificationToken.deleteMany({
     where: { userId: user.id, used: false },
@@ -123,11 +123,11 @@ export async function submitContactForm(formData: FormData) {
   const email = formData.get('email') as string
   const message = formData.get('message') as string
 
-  if (!name || !email || !message) throw new Error('All fields are required')
+  if (!name || !email || !message) return { error: 'All fields are required' }
 
   const ip = getClientIp()
   const rl = await rateLimit(`contact:${ip}`, { max: 5, windowMs: 900_000 })
-  if (!rl.success) throw new Error('Too many messages. Please try again later.')
+  if (!rl.success) return { error: 'Too many messages. Please try again later.' }
 
   await prisma.contactSubmission.create({ data: { name, email, message } })
 
@@ -137,6 +137,8 @@ export async function submitContactForm(formData: FormData) {
   } catch {
     // Email failure shouldn't block the submission
   }
+
+  return { success: true }
 }
 
 export async function getContactSubmissions() {
@@ -155,7 +157,7 @@ export async function markContactRead(id: string) {
 export async function requestPasswordReset(email: string) {
   const ip = getClientIp()
   const rl = await rateLimit(`reset:${email}:${ip}`, { max: 3, windowMs: 3_600_000 })
-  if (!rl.success) throw new Error('Too many requests. Try again later.')
+  if (!rl.success) return { error: 'Too many requests. Try again later.' }
 
   const user = await prisma.user.findUnique({ where: { email } })
 
@@ -185,11 +187,11 @@ export async function requestPasswordReset(email: string) {
 
 export async function resetPassword(token: string, newPassword: string) {
   if (!token || typeof token !== 'string') {
-    throw new Error('Invalid token')
+    return { error: 'Invalid token' }
   }
 
   if (!newPassword || newPassword.length < 6) {
-    throw new Error('Password must be at least 6 characters')
+    return { error: 'Password must be at least 6 characters' }
   }
 
   const resetToken = await prisma.passwordResetToken.findUnique({
@@ -197,7 +199,7 @@ export async function resetPassword(token: string, newPassword: string) {
   })
 
   if (!resetToken || resetToken.used || resetToken.expires < new Date()) {
-    throw new Error('Invalid or expired token')
+    return { error: 'Invalid or expired token' }
   }
 
   const hashedPassword = await bcrypt.hash(newPassword, 12)

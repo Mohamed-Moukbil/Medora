@@ -37,12 +37,16 @@ export function SubmitProofForm({ subjects }: { subjects: Subject[] }) {
   async function handleSubmit(formData: FormData) {
     setIsSubmitting(true)
     try {
-      await createProof(formData)
-      toast.success('Proof submitted successfully! It will be reviewed by our moderators.')
-      router.push('/dashboard/submissions')
-      router.refresh()
-    } catch (e: any) {
-      toast.error(e.message || 'Failed to submit proof')
+      const result = await createProof(formData)
+      if (result?.error) {
+        toast.error(result.error)
+      } else {
+        toast.success('Proof submitted successfully! It will be reviewed by our moderators.')
+        router.push('/dashboard/submissions')
+        router.refresh()
+      }
+    } catch {
+      toast.error('Failed to submit proof')
     } finally {
       setIsSubmitting(false)
     }

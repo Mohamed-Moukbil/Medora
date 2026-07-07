@@ -18,11 +18,15 @@ export function SettingsForm({ user }: { user: { id: string; name: string | null
   async function handleSubmit(formData: FormData) {
     setIsSubmitting(true)
     try {
-      await updateProfile(formData)
-      toast.success('Profile updated successfully!')
-      router.refresh()
-    } catch (e: any) {
-      toast.error(e.message || 'Failed to update profile')
+      const result = await updateProfile(formData)
+      if (result?.error) {
+        toast.error(result.error)
+      } else {
+        toast.success('Profile updated successfully!')
+        router.refresh()
+      }
+    } catch {
+      toast.error('Failed to update profile')
     } finally {
       setIsSubmitting(false)
     }

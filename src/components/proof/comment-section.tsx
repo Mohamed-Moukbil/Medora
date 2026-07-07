@@ -10,6 +10,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { ArrowLeft, Edit, Trash2, Reply, Loader2 } from 'lucide-react'
 import Link from 'next/link'
+import { toast } from 'sonner'
 
 interface Comment {
   id: string
@@ -27,9 +28,9 @@ interface CommentSectionProps {
   comments: Comment[]
   proofId: string
   currentUserId?: string
-  onSubmit?: (content: string, parentId?: string) => Promise<void>
-  onEdit?: (commentId: string, content: string) => Promise<void>
-  onDelete?: (commentId: string) => Promise<void>
+  onSubmit?: (content: string, parentId?: string) => Promise<{ error?: string } | undefined>
+  onEdit?: (commentId: string, content: string) => Promise<{ error?: string } | undefined>
+  onDelete?: (commentId: string) => Promise<{ error?: string } | undefined>
 }
 
 function CommentThread({
@@ -44,9 +45,9 @@ function CommentThread({
   comments: Comment[]
   proofId: string
   currentUserId?: string
-  onSubmit?: (content: string, parentId?: string) => Promise<void>
-  onEdit?: (commentId: string, content: string) => Promise<void>
-  onDelete?: (commentId: string) => Promise<void>
+  onSubmit?: (content: string, parentId?: string) => Promise<{ error?: string } | undefined>
+  onEdit?: (commentId: string, content: string) => Promise<{ error?: string } | undefined>
+  onDelete?: (commentId: string) => Promise<{ error?: string } | undefined>
   depth?: number
 }) {
   const [replyingTo, setReplyingTo] = useState<string | null>(null)
@@ -58,9 +59,13 @@ function CommentThread({
     if (!replyContent.trim() || !onSubmit) return
     setIsSubmitting(true)
     try {
-      await onSubmit(replyContent, replyingTo!)
-      setReplyContent('')
-      setReplyingTo(null)
+      const result = await onSubmit(replyContent, replyingTo!)
+      if (result?.error) {
+        toast.error(result.error)
+      } else {
+        setReplyContent('')
+        setReplyingTo(null)
+      }
     } finally {
       setIsSubmitting(false)
     }
@@ -108,10 +113,10 @@ function Comment({
   comment: Comment
   proofId: string
   currentUserId?: string
-  onSubmit?: (content: string, parentId?: string) => Promise<void>
+  onSubmit?: (content: string, parentId?: string) => Promise<{ error?: string } | undefined>
   onReply?: (id: string | null) => void
-  onEdit?: (commentId: string, content: string) => Promise<void>
-  onDelete?: (commentId: string) => Promise<void>
+  onEdit?: (commentId: string, content: string) => Promise<{ error?: string } | undefined>
+  onDelete?: (commentId: string) => Promise<{ error?: string } | undefined>
   isReplying: boolean
   replyContent: string
   setReplyContent: (content: string) => void
@@ -129,14 +134,22 @@ function Comment({
 
   const handleEdit = async () => {
     if (!editContent.trim() || !onEdit) return
-    await onEdit(comment.id, editContent)
-    setIsEditing(false)
+    const result = await onEdit(comment.id, editContent)
+    if (result?.error) {
+      toast.error(result.error)
+    } else {
+      setIsEditing(false)
+    }
   }
 
   const handleDelete = async () => {
     if (!onDelete || !confirm('Delete this comment?')) return
     setIsDeleting(true)
-    await onDelete(comment.id)
+    const result = await onDelete(comment.id)
+    if (result?.error) {
+      toast.error(result.error)
+    }
+    setIsDeleting(false)
   }
 
   const handleReplyClick = () => onReply?.(comment.id)
@@ -275,8 +288,12 @@ export function CommentSection({
     if (!newComment.trim() || !onSubmit) return
     setIsSubmitting(true)
     try {
-      await onSubmit(newComment)
-      setNewComment('')
+      const result = await onSubmit(newComment)
+      if (result?.error) {
+        toast.error(result.error)
+      } else {
+        setNewComment('')
+      }
     } finally {
       setIsSubmitting(false)
     }
@@ -287,9 +304,13 @@ export function CommentSection({
     if (!replyContent.trim() || !onSubmit || !replyingTo) return
     setIsReplySubmitting(true)
     try {
-      await onSubmit(replyContent, replyingTo)
-      setReplyContent('')
-      setReplyingTo(null)
+      const result = await onSubmit(replyContent, replyingTo)
+      if (result?.error) {
+        toast.error(result.error)
+      } else {
+        setReplyContent('')
+        setReplyingTo(null)
+      }
     } finally {
       setIsReplySubmitting(false)
     }
