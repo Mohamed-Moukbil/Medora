@@ -65,7 +65,6 @@
   }
   
   /* KaTeX overrides */
-  .katex { @apply text-foreground; }
   .katex-display { @apply overflow-x-auto overflow-y-hidden; }
   
   /* Scrollbar */

@@ -5,17 +5,18 @@ interface Equation {
   x: string
   y: string
   size: string
+  color: string
 }
 
 const equations: Equation[] = [
-  { tex: 'e^{i\\pi} + 1 = 0', x: '12%', y: '8%', size: 'text-lg' },
-  { tex: 'E = mc^2', x: '80%', y: '5%', size: 'text-2xl' },
-  { tex: '\\nabla \\cdot \\mathbf{E} = \\frac{\\rho}{\\varepsilon_0}', x: '5%', y: '48%', size: 'text-base' },
-  { tex: '\\int_{-\\infty}^{\\infty} e^{-x^2}\\,dx = \\sqrt{\\pi}', x: '82%', y: '44%', size: 'text-lg' },
-  { tex: 'i\\hbar\\frac{\\partial}{\\partial t}|\\psi\\rangle = \\hat{H}|\\psi\\rangle', x: '8%', y: '80%', size: 'text-base' },
-  { tex: '\\zeta(s) = \\sum_{n=1}^{\\infty} \\frac{1}{n^s}', x: '85%', y: '78%', size: 'text-lg' },
-  { tex: 'a^2 + b^2 = c^2', x: '45%', y: '88%', size: 'text-xl' },
-  { tex: '\\Delta x \\Delta p \\geq \\frac{\\hbar}{2}', x: '50%', y: '10%', size: 'text-base' },
+  { tex: 'e^{i\\pi} + 1 = 0', x: '12%', y: '8%', size: 'text-lg', color: '--muted-foreground' },
+  { tex: 'E = mc^2', x: '80%', y: '5%', size: 'text-2xl', color: '--primary' },
+  { tex: '\\nabla \\cdot \\mathbf{E} = \\frac{\\rho}{\\varepsilon_0}', x: '5%', y: '48%', size: 'text-base', color: '--muted-foreground' },
+  { tex: '\\int_{-\\infty}^{\\infty} e^{-x^2}\\,dx = \\sqrt{\\pi}', x: '82%', y: '44%', size: 'text-lg', color: '--primary' },
+  { tex: 'i\\hbar\\frac{\\partial}{\\partial t}|\\psi\\rangle = \\hat{H}|\\psi\\rangle', x: '8%', y: '80%', size: 'text-base', color: '--muted-foreground' },
+  { tex: '\\zeta(s) = \\sum_{n=1}^{\\infty} \\frac{1}{n^s}', x: '85%', y: '78%', size: 'text-lg', color: '--primary' },
+  { tex: 'a^2 + b^2 = c^2', x: '45%', y: '88%', size: 'text-xl', color: '--muted-foreground' },
+  { tex: '\\Delta x \\Delta p \\geq \\frac{\\hbar}{2}', x: '50%', y: '10%', size: 'text-base', color: '--primary' },
 ]
 
 function render(tex: string): string {
@@ -64,6 +65,7 @@ const floatCSS = `
   .eq-5 { animation: eq-a 21s ease-in-out infinite 2s; }
   .eq-6 { animation: eq-d 17s ease-in-out infinite 5s; }
   .eq-7 { animation: eq-c 23s ease-in-out infinite 2.5s; }
+  .hero-eq .katex { color: inherit; }
 `
 
 export function HeroEquations() {
@@ -73,12 +75,12 @@ export function HeroEquations() {
       {equations.map((eq, i) => (
         <div
           key={i}
-          className={`absolute pointer-events-none select-none eq-${i} ${eq.size}`}
+          className={`hero-eq absolute pointer-events-none select-none eq-${i} ${eq.size}`}
           style={{
             left: eq.x,
             top: eq.y,
             opacity: 0.1,
-            color: i % 2 === 0 ? 'hsl(20, 5%, 32%)' : 'hsl(22, 95%, 53%)',
+            color: `hsl(var(${eq.color}))`,
           }}
           dangerouslySetInnerHTML={{ __html: render(eq.tex) }}
         />
