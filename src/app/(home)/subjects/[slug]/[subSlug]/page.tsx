@@ -1,9 +1,27 @@
 import { notFound } from 'next/navigation'
+import type { Metadata } from 'next'
 import Link from 'next/link'
+import { prisma } from '@/lib/prisma'
 import { getSubSubject, getProofs } from '@/lib/actions/proofs'
-import { ProofCard } from '@/components/proof/proof-card'
+
+export const revalidate = 3600
+
+export async function generateStaticParams() {
+  const subSubjects = await prisma.subSubject.findMany({ select: { slug: true, subject: { select: { slug: true } } } })
+  return subSubjects.map(s => ({ slug: s.subject.slug, subSlug: s.slug }))
+}
+import { ProofCard, type ProofCardProof } from '@/components/proof/proof-card'
 import { Button } from '@/components/ui/button'
 import { BookOpen } from 'lucide-react'
+
+export async function generateMetadata({ params }: { params: { slug: string; subSlug: string } }): Promise<Metadata> {
+  const subSubject = await getSubSubject(params.slug, params.subSlug)
+  if (!subSubject) return {}
+  return {
+    title: `${subSubject.name} - ${subSubject.subject.name}`,
+    description: subSubject.description || `Browse ${subSubject.name} proofs in ${subSubject.subject.name}`,
+  }
+}
 
 export default async function SubSubjectPage({
   params,
@@ -59,7 +77,7 @@ export default async function SubSubjectPage({
           </div>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {proofs.map(proof => (
-              <ProofCard key={proof.id} proof={proof as any} />
+              <ProofCard key={proof.id} proof={proof as unknown as ProofCardProof} />
             ))}
           </div>
           {totalPages > 1 && (

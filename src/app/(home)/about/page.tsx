@@ -1,5 +1,8 @@
+import type { Metadata } from 'next'
 import { Card, CardContent } from '@/components/ui/card'
 import { BookOpen, Sparkles, Users, Library } from 'lucide-react'
+
+export const metadata: Metadata = { title: 'About', description: 'Learn about Medora, the platform for sharing and discovering mathematical proofs.' }
 
 export default function AboutPage() {
   return (

@@ -1,8 +1,11 @@
+import type { Metadata } from 'next'
 import { prisma } from '@/lib/prisma'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { ShieldCheck, BookOpen, MessageSquare } from 'lucide-react'
+
+export const metadata: Metadata = { title: 'Moderators', description: 'Meet the moderators who help keep Medora a trusted platform.' }
 import Link from 'next/link'
 
 async function getModerators() {

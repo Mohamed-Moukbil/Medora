@@ -1,6 +1,9 @@
+import type { Metadata } from 'next'
 import { Card, CardContent } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import { FileText, ShieldCheck, Users, Lightbulb, AlertTriangle, CheckCircle } from 'lucide-react'
+
+export const metadata: Metadata = { title: 'Guidelines', description: 'Community guidelines for submitting and reviewing proofs on Medora.' }
 
 const guidelines = [
   {

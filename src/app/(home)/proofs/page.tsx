@@ -1,9 +1,15 @@
+import type { Metadata } from 'next'
+import { Suspense } from 'react'
 import Link from 'next/link'
 import { getProofs, getSubjects, getAllTags } from '@/lib/actions/proofs'
-import { ProofCard } from '@/components/proof/proof-card'
+
+export const revalidate = 60
+export const metadata: Metadata = { title: 'Proofs', description: 'Browse all mathematical and physics proofs from official sources and the community.' }
+import { ProofCard, type ProofCardProof } from '@/components/proof/proof-card'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Search, SlidersHorizontal, Sparkles, Library } from 'lucide-react'
+import { SearchInput } from '@/components/search-input'
+import { Skeleton } from '@/components/ui/skeleton'
+import { SlidersHorizontal, Sparkles, Library } from 'lucide-react'
 
 export default async function ProofsPage({
   searchParams,
@@ -40,15 +46,9 @@ export default async function ProofsPage({
       </div>
 
       <div className="mb-8 space-y-4">
-        <form className="relative max-w-md">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <Input
-            name="search"
-            placeholder="Search proofs..."
-            defaultValue={searchParams.search}
-            className="pl-9"
-          />
-        </form>
+        <Suspense fallback={<Skeleton className="h-10 w-80 rounded-md" />}>
+          <SearchInput defaultValue={searchParams.search} />
+        </Suspense>
 
         <div className="flex flex-wrap items-center gap-2">
           <Link href="/proofs">
@@ -79,7 +79,7 @@ export default async function ProofsPage({
             <span className="text-sm text-muted-foreground">Tag:</span>
             <Link
               href={`/proofs?${new URLSearchParams(
-                Object.fromEntries(Object.entries(searchParams).filter(([k]) => k !== 'tag' && k !== 'page')) as any
+                Object.fromEntries(Object.entries(searchParams).filter(([k]) => k !== 'tag' && k !== 'page')) as Record<string, string>
               )}`}
             >
               <Button variant={!searchParams.tag ? 'default' : 'outline'} size="sm">All</Button>
@@ -123,7 +123,7 @@ export default async function ProofsPage({
         <>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {proofs.map(proof => (
-              <ProofCard key={proof.id} proof={proof as any} />
+              <ProofCard key={proof.id} proof={proof as unknown as ProofCardProof} />
             ))}
           </div>
           {totalPages > 1 && (

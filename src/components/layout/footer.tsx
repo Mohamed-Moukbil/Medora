@@ -18,13 +18,13 @@ export function Footer() {
               Built with LaTeX rendering in mind.
             </p>
             <div className="flex gap-4">
-              <a href="#" className="text-muted-foreground hover:text-foreground transition-colors" aria-label="GitHub">
+              <a href="https://github.com/Mohamed-Moukbil/Medora" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground transition-colors" aria-label="GitHub">
                 <Github className="h-5 w-5" />
               </a>
-              <a href="#" className="text-muted-foreground hover:text-foreground transition-colors" aria-label="Twitter">
+              <a href="https://twitter.com/medora" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground transition-colors" aria-label="Twitter">
                 <Twitter className="h-5 w-5" />
               </a>
-              <a href="#" className="text-muted-foreground hover:text-foreground transition-colors" aria-label="Email">
+              <a href="mailto:medora.vip" className="text-muted-foreground hover:text-foreground transition-colors" aria-label="Email">
                 <Mail className="h-5 w-5" />
               </a>
             </div>

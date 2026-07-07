@@ -5,7 +5,7 @@ export default withAuth(
   function middleware(req) {
     const token = req.nextauth.token
 
-    if (req.nextUrl.pathname.startsWith("/admin") && (token as any)?.role !== "ADMIN") {
+    if (req.nextUrl.pathname.startsWith("/admin") && token?.role !== "ADMIN") {
       return NextResponse.redirect(new URL("/auth/signin", req.url))
     }
 

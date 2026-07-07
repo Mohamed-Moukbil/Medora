@@ -2,18 +2,19 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { verifyProof, deleteProof } from '@/lib/actions/proofs'
 import { markContactRead } from '@/lib/actions/auth'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { ConfirmDialog } from '@/components/ui/confirm-dialog'
 import { MathMarkdown } from '@/components/proof/math-markdown'
 import { formatDate } from '@/lib/utils'
 import { toast } from 'sonner'
-import { CheckCircle, XCircle, Loader2, Eye, EyeOff, User, Calendar, Trash2, ShieldCheck, Users, Clock, Pencil, Mail, MailOpen } from 'lucide-react'
-import Link from 'next/link'
+import { CheckCircle, XCircle, Loader2, Eye, EyeOff, User, Calendar, Trash2, ShieldCheck, Users, Clock, Pencil, Mail, MailOpen, ChevronLeft, ChevronRight } from 'lucide-react'
 
-interface Proof {
+export interface AdminPanelProof {
   id: string
   type: string
   isPublished: boolean
@@ -27,23 +28,60 @@ interface Proof {
   subSubject: { name: string } | null
 }
 
-const typeBadge: Record<string, { label: string; variant: 'default' | 'secondary' | 'warning' | 'destructive' }> = {
-  PENDING: { label: 'Pending Review', variant: 'warning' },
-  COMMUNITY: { label: 'Community', variant: 'secondary' },
-  OFFICIAL: { label: 'Official', variant: 'default' },
-  REJECTED: { label: 'Rejected', variant: 'destructive' },
+const tabs = ['ALL', 'PENDING', 'COMMUNITY', 'OFFICIAL', 'REJECTED'] as const
+
+const tabLabels: Record<string, string> = {
+  ALL: 'All',
+  PENDING: 'Pending',
+  COMMUNITY: 'Community',
+  OFFICIAL: 'Official',
+  REJECTED: 'Rejected',
 }
 
-const tabs = ['All', 'Pending', 'Community', 'Official', 'Rejected'] as const
-
-export function AdminPanel({ proofs, messages }: { proofs: Proof[]; messages?: { id: string; name: string; email: string; message: string; read: boolean; createdAt: Date }[] }) {
+export function AdminPanel({
+  proofs,
+  messages,
+  total,
+  totalPages,
+  currentPage,
+  activeTab,
+}: {
+  proofs: AdminPanelProof[]
+  messages?: { id: string; name: string; email: string; message: string; read: boolean; createdAt: Date }[]
+  total: number
+  totalPages: number
+  currentPage: number
+  activeTab: string
+}) {
   const router = useRouter()
   const [expandedId, setExpandedId] = useState<string | null>(null)
   const [loadingId, setLoadingId] = useState<string | null>(null)
-  const [activeTab, setActiveTab] = useState<string>('Pending')
+  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null)
 
-  const filtered = activeTab === 'All' ? proofs : proofs.filter(p => p.type === activeTab.toUpperCase())
+  async function handleDeleteProof(proofId: string) {
+    setLoadingId(proofId)
+    setDeleteConfirmId(null)
+    try {
+      const result = await deleteProof(proofId)
+      if (result?.error) {
+        toast.error(result.error)
+      } else {
+        toast.success('Proof deleted')
+        router.refresh()
+      }
+    } catch {
+      toast.error('Failed to delete')
+    } finally {
+      setLoadingId(null)
+    }
+  }
+
+  const isMessagesTab = activeTab === 'MESSAGES'
   const unread = messages?.filter(m => !m.read).length || 0
+
+  function navigate(tab: string, page: number) {
+    router.push(`/admin?tab=${tab}&page=${page}`)
+  }
 
   async function handleVerify(proofId: string, action: 'approve' | 'reject') {
     setLoadingId(proofId)
@@ -70,21 +108,16 @@ export function AdminPanel({ proofs, messages }: { proofs: Proof[]; messages?: {
             key={tab}
             variant={activeTab === tab ? 'default' : 'outline'}
             size="sm"
-            onClick={() => setActiveTab(tab)}
+            onClick={() => navigate(tab, 1)}
           >
-            {tab}
-            {tab !== 'All' && (
-              <span className="ml-1.5 text-xs opacity-70">
-                ({proofs.filter(p => p.type === tab.toUpperCase()).length})
-              </span>
-            )}
+            {tabLabels[tab]}
           </Button>
         ))}
         {messages && (
           <Button
-            variant={activeTab === 'Messages' ? 'default' : 'outline'}
+            variant={isMessagesTab ? 'default' : 'outline'}
             size="sm"
-            onClick={() => setActiveTab('Messages')}
+            onClick={() => navigate('MESSAGES', 1)}
             className="gap-1.5"
           >
             <Mail className="h-3.5 w-3.5" />
@@ -98,7 +131,7 @@ export function AdminPanel({ proofs, messages }: { proofs: Proof[]; messages?: {
         )}
       </div>
 
-      {activeTab === 'Messages' && messages ? (
+      {isMessagesTab && messages ? (
         <div className="space-y-4">
           {messages.length === 0 ? (
             <div className="rounded-lg border border-dashed py-16 text-center">
@@ -139,26 +172,30 @@ export function AdminPanel({ proofs, messages }: { proofs: Proof[]; messages?: {
             ))
           )}
         </div>
-      ) : filtered.length === 0 ? (
+      ) : proofs.length === 0 ? (
         <div className="rounded-lg border border-dashed py-16 text-center">
           <CheckCircle className="mx-auto mb-4 h-12 w-12 text-muted-foreground/50" />
-          <p className="text-lg text-muted-foreground">No {activeTab.toLowerCase()} proofs</p>
+          <p className="text-lg text-muted-foreground">No {tabLabels[activeTab]?.toLowerCase() || ''} proofs</p>
           <p className="mt-1 text-sm text-muted-foreground">
-            {activeTab === 'Pending' ? 'All caught up! Check back later.' : 'No proofs in this category.'}
+            {activeTab === 'PENDING' ? 'All caught up! Check back later.' : 'No proofs in this category.'}
           </p>
         </div>
       ) : (
-        <div className="space-y-6">
-          {filtered.map(proof => {
-            const badge = typeBadge[proof.type] || typeBadge.PENDING
-            return (
+        <>
+          <div className="mb-4 text-sm text-muted-foreground">
+            {total} proof{total !== 1 ? 's' : ''} found
+          </div>
+          <div className="space-y-6">
+            {proofs.map(proof => (
               <Card key={proof.id} className="overflow-hidden">
                 <CardContent className="p-6">
                   <div className="mb-4 flex items-start justify-between">
                     <div className="flex-1 min-w-0">
                       <div className="mb-2 flex items-center gap-2">
-                        <Badge variant={badge.variant as any}>{badge.label}</Badge>
-                        <Badge variant="outline">{proof.subject.name}</Badge>
+                        <Badge variant={proof.type === 'PENDING' ? 'secondary' : proof.type === 'REJECTED' ? 'destructive' : 'default'}>
+                          {proof.type === 'PENDING' ? 'Pending Review' : proof.type === 'COMMUNITY' ? 'Community' : proof.type === 'OFFICIAL' ? 'Official' : 'Rejected'}
+                        </Badge>
+                        {proof.subject && <Badge variant="outline">{proof.subject.name}</Badge>}
                         {proof.subSubject && <Badge variant="outline">{proof.subSubject.name}</Badge>}
                       </div>
                       <h3 className="text-xl font-bold">{proof.title}</h3>
@@ -237,23 +274,7 @@ export function AdminPanel({ proofs, messages }: { proofs: Proof[]; messages?: {
                       size="sm"
                       variant="ghost"
                       className="ml-auto gap-1.5 text-destructive hover:text-destructive"
-                      onClick={async () => {
-                        if (!confirm('Delete this proof permanently?')) return
-                        setLoadingId(proof.id)
-                        try {
-                          const result = await deleteProof(proof.id)
-                          if (result?.error) {
-                            toast.error(result.error)
-                          } else {
-                            toast.success('Proof deleted')
-                            router.refresh()
-                          }
-                        } catch {
-                          toast.error('Failed to delete')
-                        } finally {
-                          setLoadingId(null)
-                        }
-                      }}
+                      onClick={() => setDeleteConfirmId(proof.id)}
                       disabled={loadingId === proof.id}
                     >
                       <Trash2 className="h-4 w-4" />
@@ -261,10 +282,47 @@ export function AdminPanel({ proofs, messages }: { proofs: Proof[]; messages?: {
                   </div>
                 </CardContent>
               </Card>
-            )
-          })}
-        </div>
+            ))}
+          </div>
+
+          {totalPages > 1 && (
+            <div className="mt-8 flex items-center justify-center gap-4">
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={currentPage <= 1}
+                onClick={() => navigate(activeTab, currentPage - 1)}
+                className="gap-1"
+              >
+                <ChevronLeft className="h-4 w-4" /> Previous
+              </Button>
+              <span className="text-sm text-muted-foreground">
+                Page {currentPage} of {totalPages}
+              </span>
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={currentPage >= totalPages}
+                onClick={() => navigate(activeTab, currentPage + 1)}
+                className="gap-1"
+              >
+                Next <ChevronRight className="h-4 w-4" />
+              </Button>
+            </div>
+          )}
+        </>
       )}
+
+      <ConfirmDialog
+        open={!!deleteConfirmId}
+        title="Delete proof?"
+        message="This action cannot be undone."
+        confirmLabel="Delete"
+        variant="destructive"
+        loading={loadingId === deleteConfirmId}
+        onConfirm={() => deleteConfirmId && handleDeleteProof(deleteConfirmId)}
+        onCancel={() => setDeleteConfirmId(null)}
+      />
     </div>
   )
 }

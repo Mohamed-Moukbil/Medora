@@ -1,16 +1,35 @@
 import { notFound } from 'next/navigation'
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
-import { getProofBySlug, getComments } from '@/lib/actions/proofs'
+import { getProofBySlug, getComments, getRelatedProofs, isProofSaved } from '@/lib/actions/proofs'
 import { MathMarkdown } from '@/components/proof/math-markdown'
 import { ProofComments } from './proof-comments'
+import { ProofCard, type ProofCardProof } from '@/components/proof/proof-card'
+import { SaveButton } from './save-button'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Separator } from '@/components/ui/separator'
 import { formatDate } from '@/lib/utils'
-import { Calendar, Eye, MessageSquare, ArrowLeft, ShieldCheck, Users, Pencil } from 'lucide-react'
+import { Calendar, Eye, MessageSquare, ArrowLeft, ShieldCheck, Users, Pencil, History } from 'lucide-react'
+
+export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+  const proof = await getProofBySlug(params.slug)
+  if (!proof) return {}
+  return {
+    title: proof.title,
+    description: proof.description || `A ${proof.type.toLowerCase()} proof in ${proof.subject.name}`,
+    openGraph: {
+      title: proof.title,
+      description: proof.description || `A ${proof.type.toLowerCase()} proof in ${proof.subject.name}`,
+      type: 'article',
+      publishedTime: proof.createdAt.toISOString(),
+      tags: proof.tags.map(t => t.name),
+    },
+  }
+}
 
 export default async function ProofPage({ params }: { params: { slug: string } }) {
   const proof = await getProofBySlug(params.slug)
@@ -18,7 +37,12 @@ export default async function ProofPage({ params }: { params: { slug: string } }
 
   const session = await getServerSession(authOptions)
   const comments = await getComments(proof.id)
-  const currentUserId = (session?.user as any)?.id
+  const currentUserId = session?.user?.id
+
+  const [relatedProofs, saved] = await Promise.all([
+    getRelatedProofs(proof.id, proof.subjectId),
+    session?.user?.id ? isProofSaved(proof.id) : false,
+  ])
 
   const isOfficial = proof.type === 'OFFICIAL'
   const isCommunity = proof.type === 'COMMUNITY'
@@ -73,15 +97,23 @@ export default async function ProofPage({ params }: { params: { slug: string } }
           <p className="mt-4 text-lg text-muted-foreground">{proof.description}</p>
         )}
 
-        {session && (currentUserId === proof.author.id || (session.user as any).role !== 'USER') && (
-          <div className="mt-4">
+        <div className="mt-4 flex flex-wrap items-center gap-3">
+          {session && (currentUserId === proof.author.id || session.user.role !== 'USER') && (
             <Link href={`/proofs/${proof.slug}/edit`}>
               <Button variant="outline" size="sm" className="gap-1.5">
                 <Pencil className="h-3.5 w-3.5" /> Edit
               </Button>
             </Link>
-          </div>
-        )}
+          )}
+          {session && (
+            <SaveButton proofId={proof.id} initialSaved={saved} />
+          )}
+          <Link href={`/proofs/${proof.slug}/versions`}>
+            <Button variant="ghost" size="sm" className="gap-1.5">
+              <History className="h-3.5 w-3.5" /> History
+            </Button>
+          </Link>
+        </div>
 
         <div className="mt-6 flex flex-wrap items-center gap-6 text-sm text-muted-foreground">
           <div className="flex items-center gap-2">
@@ -118,11 +150,25 @@ export default async function ProofPage({ params }: { params: { slug: string } }
 
       <div className="mb-8">
         <ProofComments
-          comments={comments as any}
+          comments={comments}
           proofId={proof.id}
           currentUserId={currentUserId}
         />
       </div>
+
+      {relatedProofs.length > 0 && (
+        <>
+          <Separator className="my-12" />
+          <div className="mb-8">
+            <h2 className="mb-6 text-2xl font-bold">Related Proofs</h2>
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {relatedProofs.map(related => (
+                <ProofCard key={related.id} proof={{ ...related, tags: related.tags.map(t => t.tag) } as unknown as ProofCardProof} />
+              ))}
+            </div>
+          </div>
+        </>
+      )}
     </div>
   )
 }

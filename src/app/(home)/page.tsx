@@ -1,6 +1,8 @@
 import Link from 'next/link'
 import { getFeaturedProofs, getSubjects } from '@/lib/actions/proofs'
-import { ProofCard } from '@/components/proof/proof-card'
+
+export const revalidate = 300
+import { ProofCard, type ProofCardProof } from '@/components/proof/proof-card'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { HeroEquations } from '@/components/hero-equations'
@@ -149,7 +151,7 @@ export default async function HomePage() {
               </div>
               <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 {featured.map(proof => (
-                  <ProofCard key={proof.id} proof={proof as any} />
+                  <ProofCard key={proof.id} proof={proof as unknown as ProofCardProof} />
                 ))}
               </div>
             </div>

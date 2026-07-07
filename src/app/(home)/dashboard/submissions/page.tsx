@@ -15,7 +15,7 @@ export default async function SubmissionsPage() {
 
   const proofs = await getUserProofs()
 
-  const statusColor = (type: string) => {
+  const statusColor = (type: string): 'success' | 'warning' | 'destructive' | 'default' | 'secondary' | 'outline' => {
     if (type === 'COMMUNITY') return 'success'
     if (type === 'PENDING') return 'warning'
     if (type === 'REJECTED') return 'destructive'
@@ -50,7 +50,7 @@ export default async function SubmissionsPage() {
               <CardContent className="flex items-center justify-between p-6">
                 <div className="min-w-0 flex-1">
                   <div className="mb-1 flex items-center gap-2">
-                    <Badge variant={statusColor(p.type) as any}>
+                    <Badge variant={statusColor(p.type)}>
                       {statusLabel(p.type)}
                     </Badge>
                     <span className="text-xs text-muted-foreground">{formatDate(p.createdAt)}</span>

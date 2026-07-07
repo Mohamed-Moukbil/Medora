@@ -1,3 +1,7 @@
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = { title: 'Terms of Service', description: 'Medora terms of service.' }
+
 export default function TermsPage() {
   return (
     <div className="container mx-auto px-4 py-12 sm:px-6 lg:px-8">

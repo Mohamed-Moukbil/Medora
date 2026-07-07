@@ -1,9 +1,10 @@
+import type { Metadata } from 'next'
 import { prisma } from '@/lib/prisma'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Badge } from '@/components/ui/badge'
-import { Trophy, Medal, BookOpen, MessageSquare, Eye } from 'lucide-react'
-import Link from 'next/link'
+import { Trophy } from 'lucide-react'
+import { LeaderboardList } from './leaderboard-list'
+
+export const metadata: Metadata = { title: 'Leaderboard', description: 'Top contributors ranked by proofs, comments, and views.' }
 
 async function getLeaderboard() {
   const users = await prisma.user.findMany({
@@ -37,14 +38,7 @@ async function getLeaderboard() {
       score: u._count.proofs * 10 + u._count.comments * 3 + (viewMap[u.id] || 0),
     }))
     .sort((a, b) => b.score - a.score)
-    .slice(0, 50)
 }
-
-const rankConfig = [
-  { icon: Trophy, className: 'text-yellow-500', label: 'Gold' },
-  { icon: Medal, className: 'text-gray-400', label: 'Silver' },
-  { icon: Medal, className: 'text-amber-600', label: 'Bronze' },
-]
 
 export default async function LeaderboardPage() {
   const leaderboard = await getLeaderboard()
@@ -68,43 +62,7 @@ export default async function LeaderboardPage() {
           </CardHeader>
           <CardContent className="p-0">
             {leaderboard.length > 0 ? (
-              <div className="divide-y">
-                {leaderboard.map((user, i) => {
-                  const RankIcon = rankConfig[i]?.icon
-                  return (
-                    <div key={user.id} className="flex items-center gap-4 px-6 py-4 hover:bg-muted/50 transition-colors">
-                      <div className="flex w-8 justify-center text-lg font-bold text-muted-foreground">
-                        {i < 3 ? (
-                          <RankIcon className={`h-6 w-6 ${rankConfig[i].className}`} />
-                        ) : (
-                          <span>#{i + 1}</span>
-                        )}
-                      </div>
-                      <Link href={`/users/${user.id}`} className="flex items-center gap-3 min-w-0 flex-1">
-                        <Avatar className="h-10 w-10">
-                          <AvatarImage src={user.image || undefined} />
-                          <AvatarFallback>{user.name[0] || 'U'}</AvatarFallback>
-                        </Avatar>
-                        <div className="min-w-0">
-                          <p className="font-medium truncate">{user.name}</p>
-                          <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                            <span className="flex items-center gap-1">
-                              <BookOpen className="h-3 w-3" /> {user.proofs}
-                            </span>
-                            <span className="flex items-center gap-1">
-                              <MessageSquare className="h-3 w-3" /> {user.comments}
-                            </span>
-                            <span className="flex items-center gap-1">
-                              <Eye className="h-3 w-3" /> {user.views}
-                            </span>
-                          </div>
-                        </div>
-                      </Link>
-                      <Badge variant="secondary" className="shrink-0">{user.score} pts</Badge>
-                    </div>
-                  )
-                })}
-              </div>
+              <LeaderboardList users={leaderboard} />
             ) : (
               <div className="py-12 text-center text-muted-foreground">
                 <Trophy className="mx-auto mb-4 h-12 w-12 text-muted-foreground/50" />

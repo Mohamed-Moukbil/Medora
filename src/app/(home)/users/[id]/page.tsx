@@ -1,12 +1,19 @@
 import { notFound } from 'next/navigation'
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { getUserById, getUserProfileProofs } from '@/lib/actions/proofs'
-import { ProofCard } from '@/components/proof/proof-card'
+import { ProofCard, type ProofCardProof } from '@/components/proof/proof-card'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { formatDate } from '@/lib/utils'
 import { Calendar, BookOpen, MessageSquare, ArrowLeft } from 'lucide-react'
+
+export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
+  const user = await getUserById(params.id)
+  if (!user) return {}
+  return { title: `${user.name || 'Anonymous'}'s Profile`, description: `Proofs and activity by ${user.name || 'Anonymous'}` }
+}
 
 export default async function UserProfilePage({ params }: { params: { id: string } }) {
   const user = await getUserById(params.id)
@@ -50,7 +57,7 @@ export default async function UserProfilePage({ params }: { params: { id: string
       {proofs.length > 0 ? (
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {proofs.map(proof => (
-            <ProofCard key={proof.id} proof={proof as any} />
+            <ProofCard key={proof.id} proof={proof as unknown as ProofCardProof} />
           ))}
         </div>
       ) : (

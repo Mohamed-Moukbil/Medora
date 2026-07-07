@@ -5,6 +5,7 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
+import { getFtsProofIds } from '@/lib/search'
 
 const createProofSchema = z.object({
   title: z.string().min(3).max(200),
@@ -15,8 +16,9 @@ const createProofSchema = z.object({
 })
 
 export async function getSubjects(category?: string) {
+  const validCategories = ['MATHEMATICS', 'PHYSICS'] as const
   return prisma.subject.findMany({
-    where: category ? { category: category as any } : undefined,
+    where: category && validCategories.includes(category as any) ? { category: category as 'MATHEMATICS' | 'PHYSICS' } : undefined,
     orderBy: { order: 'asc' },
     include: {
       _count: { select: { proofs: { where: { isPublished: true } } } },
@@ -96,11 +98,18 @@ export async function getProofs({
   if (subSubject) where.subSubject = { slug: subSubject }
   if (type && ['OFFICIAL', 'COMMUNITY', 'PENDING', 'REJECTED'].includes(type)) where.type = type
   if (status) where.isPublished = status === 'PUBLISHED'
-  if (search) where.OR = [
-    { title: { contains: search, mode: 'insensitive' } },
-    { description: { contains: search, mode: 'insensitive' } },
-  ]
   if (tag) where.tags = { some: { tag: { slug: tag } } }
+
+  let ftsIdOrder: string[] | undefined
+  if (search) {
+    ftsIdOrder = await getFtsProofIds(search)
+    if (ftsIdOrder.length > 0) {
+      where.id = { in: ftsIdOrder }
+    } else {
+      where.id = { in: [] }
+      return { data: [], total: 0, page, pageSize, totalPages: 0 }
+    }
+  }
 
   const orderBy: any =
     sort === 'oldest' ? { createdAt: 'asc' } :
@@ -124,7 +133,14 @@ export async function getProofs({
     prisma.proof.count({ where: { ...where, isPublished: true } }),
   ])
 
-  return { data: data.map(p => ({ ...p, tags: p.tags.map(t => t.tag) })), total, page, pageSize, totalPages: Math.ceil(total / pageSize) }
+  let result = data.map(p => ({ ...p, tags: p.tags.map(t => t.tag) }))
+
+  if (ftsIdOrder) {
+    const idRank = new Map(ftsIdOrder.map((id, i) => [id, i]))
+    result.sort((a, b) => (idRank.get(a.id) ?? Infinity) - (idRank.get(b.id) ?? Infinity))
+  }
+
+  return { data: result, total, page, pageSize, totalPages: Math.ceil(total / pageSize) }
 }
 
 export async function getProofBySlug(slug: string) {
@@ -213,11 +229,14 @@ export async function updateProof(proofId: string, formData: FormData) {
   const session = await getServerSession(authOptions)
   if (!session?.user?.id) return { error: 'Unauthorized' }
 
-  const proof = await prisma.proof.findUnique({ where: { id: proofId }, select: { id: true, slug: true, authorId: true } })
+  const proof = await prisma.proof.findUnique({
+    where: { id: proofId },
+    select: { id: true, slug: true, authorId: true, title: true, content: true, description: true },
+  })
   if (!proof) return { error: 'Proof not found' }
 
   const isOwner = proof.authorId === session.user.id
-  const isMod = (session.user as any).role !== 'USER'
+  const isMod = session.user.role !== 'USER'
   if (!isOwner && !isMod) return { error: 'Unauthorized' }
 
   const data = {
@@ -234,19 +253,37 @@ export async function updateProof(proofId: string, formData: FormData) {
   const tagNames: string[] = tagsRaw ? JSON.parse(tagsRaw) : []
   const tagConnections = tagNames.length > 0 ? await findOrCreateTags(tagNames) : []
 
-  await prisma.proof.update({
-    where: { id: proofId },
-    data: {
-      title: parsed.title,
-      content: parsed.content,
-      description: parsed.description,
-      subjectId: parsed.subjectId,
-      subSubjectId: parsed.subSubjectId || null,
-      tags: {
-        deleteMany: {},
-        create: tagConnections.map(t => ({ tagId: t.id })),
+  await prisma.$transaction(async (tx) => {
+    const latestVersion = await tx.proofVersion.findFirst({
+      where: { proofId },
+      orderBy: { version: 'desc' },
+      select: { version: true },
+    })
+
+    await tx.proofVersion.create({
+      data: {
+        proofId,
+        title: proof.title,
+        content: proof.content,
+        description: proof.description,
+        version: (latestVersion?.version ?? 0) + 1,
       },
-    },
+    })
+
+    await tx.proof.update({
+      where: { id: proofId },
+      data: {
+        title: parsed.title,
+        content: parsed.content,
+        description: parsed.description,
+        subjectId: parsed.subjectId,
+        subSubjectId: parsed.subSubjectId || null,
+        tags: {
+          deleteMany: {},
+          create: tagConnections.map(t => ({ tagId: t.id })),
+        },
+      },
+    })
   })
 
   revalidatePath(`/proofs/${proof.slug}`)
@@ -297,23 +334,34 @@ export async function deleteComment(commentId: string) {
   return { success: true }
 }
 
-export async function getAllProofs() {
+export async function getAllProofs({ page = 1, pageSize = 20, type }: { page?: number; pageSize?: number; type?: string } = {}) {
   const session = await getServerSession(authOptions)
-  if (!session?.user || (session.user as any).role === 'USER') return []
+  if (!session?.user || session.user.role === 'USER') return { data: [], total: 0, page, pageSize, totalPages: 0 }
 
-  return prisma.proof.findMany({
-    orderBy: { createdAt: 'desc' },
-    include: {
-      author: { select: { id: true, name: true, image: true } },
-      subject: true,
-      subSubject: true,
-    },
-  })
+  const validTypes = ['OFFICIAL', 'COMMUNITY', 'PENDING', 'REJECTED'] as const
+  const where = type && validTypes.includes(type as any) ? { type: type as 'OFFICIAL' | 'COMMUNITY' | 'PENDING' | 'REJECTED' } : {}
+
+  const [data, total] = await Promise.all([
+    prisma.proof.findMany({
+      where,
+      orderBy: { createdAt: 'desc' },
+      skip: (page - 1) * pageSize,
+      take: pageSize,
+      include: {
+        author: { select: { id: true, name: true, image: true } },
+        subject: true,
+        subSubject: true,
+      },
+    }),
+    prisma.proof.count({ where }),
+  ])
+
+  return { data, total, page, pageSize, totalPages: Math.ceil(total / pageSize) }
 }
 
 export async function getPendingProofs() {
   const session = await getServerSession(authOptions)
-  if (!session?.user || (session.user as any).role === 'USER') return []
+  if (!session?.user || session.user.role === 'USER') return []
 
   return prisma.proof.findMany({
     where: { type: 'PENDING' },
@@ -328,7 +376,7 @@ export async function getPendingProofs() {
 
 export async function verifyProof(proofId: string, action: 'approve' | 'reject') {
   const session = await getServerSession(authOptions)
-  if (!session?.user || (session.user as any).role === 'USER') return { error: 'Unauthorized' }
+  if (!session?.user || session.user.role === 'USER') return { error: 'Unauthorized' }
 
   const type = action === 'approve' ? 'COMMUNITY' : 'REJECTED'
 
@@ -349,7 +397,7 @@ export async function verifyProof(proofId: string, action: 'approve' | 'reject')
 
 export async function deleteProof(proofId: string) {
   const session = await getServerSession(authOptions)
-  if (!session?.user || (session.user as any).role === 'USER') return { error: 'Unauthorized' }
+  if (!session?.user || session.user.role === 'USER') return { error: 'Unauthorized' }
 
   await prisma.proof.delete({ where: { id: proofId } })
 
@@ -449,4 +497,87 @@ export async function updateProfile(formData: FormData) {
   revalidatePath('/dashboard')
   revalidatePath('/dashboard/settings')
   return { success: true }
+}
+
+export async function getRelatedProofs(proofId: string, subjectId: string, take = 4) {
+  return prisma.proof.findMany({
+    where: { subjectId, id: { not: proofId }, isPublished: true },
+    orderBy: [{ viewCount: 'desc' }, { createdAt: 'desc' }],
+    take,
+    include: {
+      author: { select: { id: true, name: true, image: true } },
+      subject: { select: { name: true, slug: true, color: true } },
+      subSubject: { select: { name: true, slug: true } },
+      _count: { select: { comments: true } },
+      tags: { include: { tag: true } },
+    },
+  })
+}
+
+export async function saveProof(proofId: string) {
+  const session = await getServerSession(authOptions)
+  if (!session?.user?.id) return { error: 'Unauthorized' }
+
+  try {
+    await prisma.savedProof.create({
+      data: { userId: session.user.id, proofId },
+    })
+  } catch {
+    return { error: 'Already saved' }
+  }
+
+  revalidatePath(`/proofs/${proofId}`)
+  return { success: true }
+}
+
+export async function unsaveProof(proofId: string) {
+  const session = await getServerSession(authOptions)
+  if (!session?.user?.id) return { error: 'Unauthorized' }
+
+  await prisma.savedProof.deleteMany({
+    where: { userId: session.user.id, proofId },
+  })
+
+  revalidatePath(`/proofs/${proofId}`)
+  return { success: true }
+}
+
+export async function isProofSaved(proofId: string) {
+  const session = await getServerSession(authOptions)
+  if (!session?.user?.id) return false
+
+  const saved = await prisma.savedProof.findUnique({
+    where: { userId_proofId: { userId: session.user.id, proofId } },
+  })
+
+  return !!saved
+}
+
+export async function getSavedProofs() {
+  const session = await getServerSession(authOptions)
+  if (!session?.user?.id) return []
+
+  return prisma.savedProof.findMany({
+    where: { userId: session.user.id },
+    orderBy: { createdAt: 'desc' },
+    include: {
+      proof: {
+        include: {
+          author: { select: { id: true, name: true, image: true } },
+          subject: { select: { name: true, slug: true, color: true } },
+          subSubject: { select: { name: true, slug: true } },
+          _count: { select: { comments: true } },
+          tags: { include: { tag: true } },
+        },
+      },
+    },
+  })
+}
+
+export async function getProofVersions(proofId: string) {
+  return prisma.proofVersion.findMany({
+    where: { proofId },
+    orderBy: { version: 'desc' },
+    take: 10,
+  })
 }

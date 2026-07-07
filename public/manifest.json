@@ -1,0 +1,12 @@
+{
+  "name": "Medora",
+  "short_name": "Medora",
+  "description": "A platform for sharing and discovering mathematical proofs.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0c0e1a",
+  "theme_color": "#0ea5e9",
+  "icons": [
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}

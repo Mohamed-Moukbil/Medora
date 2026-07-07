@@ -1,9 +1,27 @@
 import { notFound } from 'next/navigation'
+import type { Metadata } from 'next'
 import Link from 'next/link'
+import { prisma } from '@/lib/prisma'
 import { getSubjectBySlug, getProofs } from '@/lib/actions/proofs'
-import { ProofCard } from '@/components/proof/proof-card'
+
+export const revalidate = 3600
+
+export async function generateStaticParams() {
+  const subjects = await prisma.subject.findMany({ select: { slug: true } })
+  return subjects.map(s => ({ slug: s.slug }))
+}
+import { ProofCard, type ProofCardProof } from '@/components/proof/proof-card'
 import { Button } from '@/components/ui/button'
 import { ArrowRight, BookOpen } from 'lucide-react'
+
+export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+  const subject = await getSubjectBySlug(params.slug)
+  if (!subject) return {}
+  return {
+    title: `${subject.name} Proofs`,
+    description: subject.description || `Browse proofs in ${subject.name}`,
+  }
+}
 
 export default async function SubjectPage({
   params,
@@ -66,7 +84,7 @@ export default async function SubjectPage({
         <>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {proofs.map(proof => (
-              <ProofCard key={proof.id} proof={proof as any} />
+              <ProofCard key={proof.id} proof={proof as unknown as ProofCardProof} />
             ))}
           </div>
           {totalPages > 1 && (

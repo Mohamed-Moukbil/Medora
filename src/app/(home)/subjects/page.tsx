@@ -1,5 +1,9 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { getSubjects } from '@/lib/actions/proofs'
+
+export const revalidate = 3600
+export const metadata: Metadata = { title: 'Subjects', description: 'Browse mathematical and physics proofs organized by subject.' }
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Sigma, Atom, ArrowRight, BookOpen } from 'lucide-react'

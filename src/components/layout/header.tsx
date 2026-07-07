@@ -7,7 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetHeader, SheetClose } from '@/components/ui/sheet'
 import { ThemeToggle } from './theme-toggle'
-import { Menu, User, LogOut, Settings, BookOpen } from 'lucide-react'
+import { Menu, User, LogOut, Settings, BookOpen, Bookmark } from 'lucide-react'
 
 export function Header() {
   const { data: session } = useSession()
@@ -72,6 +72,12 @@ export function Header() {
                   <Link href="/dashboard/submissions" className="flex items-center gap-2">
                     <BookOpen className="h-4 w-4" />
                     My Submissions
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/dashboard/saved" className="flex items-center gap-2">
+                    <Bookmark className="h-4 w-4" />
+                    Saved
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
@@ -144,6 +150,14 @@ export function Header() {
                         className="px-3 py-2 text-left text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent rounded-md"
                       >
                         My Submissions
+                      </Link>
+                    </SheetClose>
+                    <SheetClose asChild>
+                      <Link
+                        href="/dashboard/saved"
+                        className="px-3 py-2 text-left text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent rounded-md"
+                      >
+                        Saved
                       </Link>
                     </SheetClose>
                     {(session.user.role === 'ADMIN' || session.user.role === 'MODERATOR') && (

@@ -6,8 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Eye, MessageSquare, Clock, ExternalLink, ShieldCheck, Users, XCircle } from 'lucide-react'
 import Link from 'next/link'
 
-interface ProofCardProps {
-  proof: {
+export type ProofCardProof = {
     id: string
     title: string
     slug: string
@@ -22,6 +21,9 @@ interface ProofCardProps {
     tags?: { id: string; name: string; slug: string }[]
     _count?: { comments: number }
   }
+
+export interface ProofCardProps {
+  proof: ProofCardProof
   variant?: 'default' | 'compact'
 }
 

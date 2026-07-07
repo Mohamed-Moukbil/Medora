@@ -8,7 +8,8 @@ import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { ArrowLeft, Edit, Trash2, Reply, Loader2 } from 'lucide-react'
+import { ConfirmDialog } from '@/components/ui/confirm-dialog'
+import { ArrowLeft, Edit, Trash2, Reply, Loader2, MessageSquare } from 'lucide-react'
 import Link from 'next/link'
 import { toast } from 'sonner'
 
@@ -127,6 +128,7 @@ function Comment({
   const [isEditing, setIsEditing] = useState(false)
   const [editContent, setEditContent] = useState(comment.content)
   const [isDeleting, setIsDeleting] = useState(false)
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
 
   const isAuthor = currentUserId === comment.authorId
   const canEdit = isAuthor && onEdit
@@ -143,8 +145,9 @@ function Comment({
   }
 
   const handleDelete = async () => {
-    if (!onDelete || !confirm('Delete this comment?')) return
+    if (!onDelete) return
     setIsDeleting(true)
+    setShowDeleteConfirm(false)
     const result = await onDelete(comment.id)
     if (result?.error) {
       toast.error(result.error)
@@ -190,7 +193,7 @@ function Comment({
                 </Button>
               )}
               {canDelete && !isEditing && (
-                <Button variant="ghost" size="icon" onClick={handleDelete} disabled={isDeleting} className="h-8 w-8 text-destructive hover:text-destructive">
+                <Button variant="ghost" size="icon" onClick={() => setShowDeleteConfirm(true)} disabled={isDeleting} className="h-8 w-8 text-destructive hover:text-destructive">
                   <Trash2 className="h-3.5 w-3.5" />
                 </Button>
               )}
@@ -265,6 +268,16 @@ function Comment({
           />
         )}
       </Card>
+      <ConfirmDialog
+        open={showDeleteConfirm}
+        title="Delete comment?"
+        message="This action cannot be undone."
+        confirmLabel="Delete"
+        variant="destructive"
+        loading={isDeleting}
+        onConfirm={handleDelete}
+        onCancel={() => setShowDeleteConfirm(false)}
+      />
     </div>
   )
 }
@@ -319,7 +332,7 @@ export function CommentSection({
   return (
     <div className="mt-12">
       <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
-        <span className="text-primary">💬</span>
+        <MessageSquare className="h-6 w-6 text-primary" />
         Comments ({comments.length})
       </h2>
 
