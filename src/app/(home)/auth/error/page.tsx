@@ -32,7 +32,7 @@ function AuthErrorContent() {
             <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-destructive/10">
               <AlertTriangle className="h-8 w-8 text-destructive" />
             </div>
-            <CardTitle className="text-center text-2xl">{title}</CardTitle>
+            <CardTitle className="text-center text-2xl font-display tracking-wide">{title}</CardTitle>
           </CardHeader>
           <CardContent className="text-center">
             <p className="mb-6 text-muted-foreground">{message}</p>

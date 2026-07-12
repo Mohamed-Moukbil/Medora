@@ -41,8 +41,9 @@ export default async function ProofsPage({
   return (
     <div className="container mx-auto px-4 py-12 sm:px-6 lg:px-8">
       <div className="mb-10">
-        <h1 className="text-4xl font-bold">Proofs</h1>
-        <p className="mt-2 text-lg text-muted-foreground">Browse all proofs from official sources and the community</p>
+        <div className="section-label mb-3">BROWSE</div>
+        <h1 className="text-4xl font-bold font-display tracking-wide">Proofs</h1>
+        <p className="mt-2 text-lg text-muted-foreground font-serif">Browse all proofs from official sources and the community</p>
       </div>
 
       <div className="mb-8 space-y-4">
@@ -140,9 +141,9 @@ export default async function ProofsPage({
           )}
         </>
       ) : (
-        <div className="rounded-lg border border-dashed py-16 text-center">
+        <div className="rounded-lg border border-dashed py-16 text-center bg-muted/30">
           <Library className="mx-auto mb-4 h-12 w-12 text-muted-foreground/50" />
-          <p className="text-lg text-muted-foreground">No proofs found</p>
+          <p className="text-lg text-muted-foreground font-serif">No proofs found</p>
           <p className="mt-1 text-sm text-muted-foreground">Try adjusting your filters or submit a new proof</p>
           <Link href="/submit">
             <Button className="mt-4 gap-2">

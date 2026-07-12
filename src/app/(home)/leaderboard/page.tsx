@@ -47,8 +47,9 @@ export default async function LeaderboardPage() {
     <div className="container mx-auto px-4 py-12 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-3xl">
         <div className="mb-10 text-center">
-          <h1 className="text-4xl font-bold">Leaderboard</h1>
-          <p className="mt-2 text-lg text-muted-foreground">
+          <div className="section-label mb-3">RANKINGS</div>
+          <h1 className="text-4xl font-bold font-display tracking-wide">Leaderboard</h1>
+          <p className="mt-2 text-lg text-muted-foreground font-serif">
             Top contributors ranked by proofs, comments, and views
           </p>
         </div>

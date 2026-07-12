@@ -78,6 +78,7 @@ const config = {
         sans: ['var(--font-sans)', 'system-ui', 'sans-serif'],
         serif: ['var(--font-serif)', 'Georgia', 'serif'],
         mono: ['var(--font-mono)', 'monospace'],
+        display: ['var(--font-display)', 'Georgia', 'serif'],
       },
       keyframes: {
         'accordion-down': { from: { height: '0' }, to: { height: 'var(--radix-accordion-content-height)' } },

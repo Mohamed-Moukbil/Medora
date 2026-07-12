@@ -9,18 +9,19 @@ export default function AboutPage() {
     <div className="container mx-auto px-4 py-12 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-4xl">
         <div className="mb-10 text-center">
-          <h1 className="text-4xl font-bold">About Medora</h1>
-          <p className="mt-2 text-lg text-muted-foreground">
+          <div className="section-label mb-3">ABOUT</div>
+          <h1 className="text-4xl font-bold font-display tracking-wide">About Medora</h1>
+          <p className="mt-2 text-lg text-muted-foreground font-serif">
             A platform for sharing, discovering, and discussing mathematical and physics proofs
           </p>
         </div>
 
         <div className="prose prose-lg max-w-none mb-12">
-          <p>
+          <p className="font-serif">
             Medora is a community-driven platform dedicated to mathematical and physics proofs.
             We believe that mathematical knowledge should be accessible, shareable, and collaborative.
           </p>
-          <p>
+          <p className="font-serif">
             Whether you are a student learning the fundamentals, a researcher exploring advanced
             topics, or an enthusiast who appreciates the beauty of mathematical reasoning,
             Medora provides a space to engage with proofs in a meaningful way.
@@ -38,8 +39,8 @@ export default function AboutPage() {
                 <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
                   <item.icon className="h-6 w-6" />
                 </div>
-                <h3 className="font-semibold mb-1">{item.title}</h3>
-                <p className="text-sm text-muted-foreground">{item.desc}</p>
+                <h3 className="font-semibold mb-1 font-display tracking-wide">{item.title}</h3>
+                <p className="text-sm text-muted-foreground font-serif">{item.desc}</p>
               </CardContent>
             </Card>
           ))}

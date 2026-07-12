@@ -22,8 +22,9 @@ export default async function SignInPage({
           </div>
         )}
         <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold">Welcome back</h1>
-          <p className="mt-2 text-muted-foreground">Sign in to your account to continue</p>
+          <div className="section-label mb-3">AUTHENTICATION</div>
+          <h1 className="text-3xl font-bold font-display tracking-wide">Welcome back</h1>
+          <p className="mt-2 text-muted-foreground font-serif">Sign in to your account to continue</p>
         </div>
         <SignInForm />
       </div>

@@ -38,7 +38,7 @@ export default async function UserProfilePage({ params }: { params: { id: string
               <AvatarFallback className="text-2xl">{user.name?.[0] || 'U'}</AvatarFallback>
             </Avatar>
           </div>
-          <h1 className="text-2xl font-bold">{user.name || 'Anonymous'}</h1>
+          <h1 className="text-2xl font-bold font-display tracking-wide">{user.name || 'Anonymous'}</h1>
           <div className="mt-2 flex flex-wrap gap-4 text-sm text-muted-foreground">
             <span className="flex items-center gap-1">
               <Calendar className="h-4 w-4" /> Joined {formatDate(user.createdAt)}
@@ -53,7 +53,8 @@ export default async function UserProfilePage({ params }: { params: { id: string
         </CardContent>
       </Card>
 
-      <h2 className="mb-6 text-2xl font-bold">Published Proofs</h2>
+      <div className="section-label mb-3">PUBLICATIONS</div>
+      <h2 className="mb-6 text-2xl font-bold font-display tracking-wide">Published Proofs</h2>
       {proofs.length > 0 ? (
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {proofs.map(proof => (

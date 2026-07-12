@@ -74,21 +74,28 @@
 }
 
 @layer components {
-  .prose { @apply text-foreground max-w-none; }
+  .prose { @apply text-foreground max-w-none font-serif leading-relaxed; }
+  .prose h1, .prose h2, .prose h3, .prose h4 { @apply font-sans; }
   .prose h1 { @apply text-3xl font-bold mt-8 mb-4; }
   .prose h2 { @apply text-2xl font-semibold mt-8 mb-3; }
   .prose h3 { @apply text-xl font-semibold mt-6 mb-2; }
   .prose p { @apply my-4 leading-relaxed; }
   .prose ul { @apply list-disc list-inside my-4 space-y-2; }
   .prose ol { @apply list-decimal list-inside my-4 space-y-2; }
-  .prose code { @apply bg-muted px-1.5 py-0.5 rounded text-sm font-mono; }
+  .prose code { @apply bg-muted px-1.5 py-0.5 rounded text-sm font-mono font-sans; }
   .prose pre { @apply bg-muted p-4 rounded-lg overflow-x-auto my-4; }
   .prose pre code { @apply bg-transparent p-0 text-sm; }
-  .prose blockquote { @apply border-l-4 border-primary pl-4 italic my-4; }
+  .prose blockquote { @apply border-l-4 border-primary pl-4 italic my-4 font-sans; }
   .prose a { @apply text-primary underline underline-offset-2 hover:no-underline; }
   .prose table { @apply w-full border-collapse my-4; }
   .prose th, .prose td { @apply border border-border p-2 text-left; }
   .prose th { @apply bg-muted font-semibold; }
+}
+
+@layer utilities {
+  .section-label {
+    @apply text-xs font-semibold text-muted-foreground uppercase tracking-[0.2em];
+  }
 }
 
 @layer utilities {

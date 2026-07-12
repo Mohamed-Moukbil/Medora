@@ -58,8 +58,9 @@ export default async function SubSubjectPage({
             <BookOpen className="h-7 w-7" style={{ color: subSubject.subject.color }} />
           </div>
           <div>
-            <h1 className="text-4xl font-bold">{subSubject.name}</h1>
-            {subSubject.description && <p className="mt-1 text-lg text-muted-foreground">{subSubject.description}</p>}
+            <div className="section-label mb-2">TOPIC</div>
+            <h1 className="text-4xl font-bold font-display tracking-wide">{subSubject.name}</h1>
+            {subSubject.description && <p className="mt-1 text-lg text-muted-foreground font-serif">{subSubject.description}</p>}
             <p className="mt-1 text-sm text-muted-foreground">
               {subSubject._count.proofs} proof{subSubject._count.proofs !== 1 ? 's' : ''} in {subSubject.subject.name}
             </p>

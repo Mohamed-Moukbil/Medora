@@ -9,7 +9,7 @@ export function Footer() {
       <div className="container mx-auto px-4 py-10 md:py-14 lg:px-8">
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
           <div className="space-y-4">
-            <Link href="/" className="flex items-center gap-2 font-semibold text-lg tracking-tight">
+            <Link href="/" className="flex items-center gap-2 font-display text-xl font-bold tracking-wide">
               Medora
             </Link>
             <p className="text-sm text-muted-foreground max-w-xs leading-relaxed">

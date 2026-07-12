@@ -25,8 +25,9 @@ export default async function AdminPage({
   return (
     <div className="container mx-auto px-4 py-12 sm:px-6 lg:px-8">
       <div className="mb-10">
-        <h1 className="text-4xl font-bold">Admin Panel</h1>
-        <p className="mt-2 text-lg text-muted-foreground">Review and manage all proofs on the platform</p>
+        <div className="section-label mb-3">MANAGEMENT</div>
+        <h1 className="text-4xl font-bold font-display tracking-wide">Admin Panel</h1>
+        <p className="mt-2 text-lg text-muted-foreground font-serif">Review and manage all proofs on the platform</p>
       </div>
 
       <AdminPanel proofs={proofs as unknown as AdminPanelProof[]} messages={messages as unknown as { id: string; name: string; email: string; message: string; read: boolean; createdAt: Date }[]} total={total} totalPages={totalPages} currentPage={page} activeTab={activeTab} />

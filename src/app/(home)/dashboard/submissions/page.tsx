@@ -33,8 +33,9 @@ export default async function SubmissionsPage() {
     <div className="container mx-auto px-4 py-12 sm:px-6 lg:px-8">
       <div className="mb-10 flex items-center justify-between">
         <div>
-          <h1 className="text-4xl font-bold">My Submissions</h1>
-          <p className="mt-2 text-lg text-muted-foreground">Track your submitted proofs</p>
+          <div className="section-label mb-3">YOUR WORK</div>
+          <h1 className="text-4xl font-bold font-display tracking-wide">My Submissions</h1>
+          <p className="mt-2 text-lg text-muted-foreground font-serif">Track your submitted proofs</p>
         </div>
         <Link href="/submit">
           <Button className="gap-2">

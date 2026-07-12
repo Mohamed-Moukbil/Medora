@@ -26,8 +26,9 @@ export default async function VersionsPage({ params }: { params: { slug: string 
       </div>
 
       <div className="mb-10">
-        <h1 className="text-4xl font-bold">Version History</h1>
-        <p className="mt-2 text-lg text-muted-foreground">{proof.title}</p>
+        <div className="section-label mb-3">HISTORY</div>
+        <h1 className="text-4xl font-bold font-display tracking-wide">Version History</h1>
+        <p className="mt-2 text-lg text-muted-foreground font-serif">{proof.title}</p>
       </div>
 
       {versions.length > 0 ? (

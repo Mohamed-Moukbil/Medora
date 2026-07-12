@@ -48,7 +48,7 @@ export function ProofCard({ proof, variant = 'default' }: ProofCardProps) {
                 {proof.title}
               </CardTitle>
             </Link>
-            <p className="mt-1 text-sm text-muted-foreground line-clamp-2">
+            <p className="mt-1 text-sm text-muted-foreground line-clamp-2 font-serif">
               {proof.description || 'No description provided'}
             </p>
           </div>

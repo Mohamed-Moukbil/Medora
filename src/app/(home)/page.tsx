@@ -20,52 +20,50 @@ export default async function HomePage() {
 
   return (
     <div className="flex flex-col">
-      <section className="relative overflow-hidden pb-16 pt-20 md:pb-24 md:pt-28 bg-gradient-to-b from-primary/[0.02] via-transparent to-primary/[0.01]">
+      {/* Hero */}
+      <section className="relative overflow-hidden pb-20 pt-24 md:pb-28 md:pt-32 bg-gradient-to-b from-primary/[0.03] via-transparent to-background">
         <HeroEquations />
         <div className="container relative z-10 mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="mx-auto max-w-3xl text-center">
-            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-border/50 bg-muted/50 px-4 py-1.5 text-sm font-medium text-muted-foreground backdrop-blur-sm">
-              <Sparkles className="h-4 w-4" />
-              Discover the beauty of mathematical reasoning
-            </div>
-            <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
+          <div className="mx-auto max-w-4xl text-center">
+            <div className="mb-8 section-label">Discover &middot; Share &middot; Discuss</div>
+            <h1 className="font-display text-5xl font-bold tracking-wide sm:text-6xl md:text-7xl lg:text-8xl">
               Where{' '}
               <span className="relative inline-block">
-                <span className="absolute inset-0 bg-gradient-to-r from-primary to-violet-500 opacity-20 blur-2xl scale-150" />
+                <span className="absolute inset-0 bg-gradient-to-r from-primary to-violet-500 opacity-25 blur-3xl scale-150" />
                 <span className="relative bg-gradient-to-r from-primary via-primary to-violet-400 bg-clip-text text-transparent">Proofs</span>
               </span>{' '}
               Come to Life
             </h1>
-            <p className="mt-6 text-lg text-muted-foreground md:text-xl max-w-2xl mx-auto">
+            <p className="mt-6 text-lg text-muted-foreground/90 md:text-xl max-w-2xl mx-auto font-serif leading-relaxed">
               A beautiful platform for sharing, discovering, and discussing mathematical and physics proofs
               with stunning LaTeX rendering. From fundamental theorems to advanced research.
             </p>
             <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
               <Link href="/proofs">
-                <Button size="lg" className="gap-2 text-base shadow-lg shadow-foreground/10">
+                <Button size="lg" className="gap-2 text-base shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-shadow">
                   <Library className="h-5 w-5" />
                   Browse Proofs
                   <ArrowRight className="h-4 w-4" />
                 </Button>
               </Link>
               <Link href="/submit">
-                <Button variant="outline" size="lg" className="gap-2 text-base">
+                <Button variant="outline" size="lg" className="gap-2 text-base border-primary/20 hover:border-primary/40">
                   <Sparkles className="h-5 w-5" />
                   Submit Your Proof
                 </Button>
               </Link>
             </div>
-            <div className="mt-12 flex items-center justify-center gap-8 text-sm text-muted-foreground">
+            <div className="mt-14 flex items-center justify-center gap-8 text-sm text-muted-foreground">
               <div className="flex items-center gap-2">
-                <div className="h-2 w-2 rounded-full bg-foreground" />
+                <div className="h-2 w-2 rounded-full bg-primary" />
                 Official Proofs
               </div>
               <div className="flex items-center gap-2">
-                <div className="h-2 w-2 border border-foreground/50" />
+                <div className="h-2 w-2 rounded-full border border-primary/50 bg-primary/10" />
                 Community Proofs
               </div>
               <div className="flex items-center gap-2">
-                <Users className="h-4 w-4" />
+                <Users className="h-4 w-4 text-primary/60" />
                 Open Discussions
               </div>
             </div>
@@ -73,23 +71,28 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {/* Explore by Subject */}
       <ScrollReveal>
-        <section className="relative border-y bg-gradient-to-br from-primary/[0.03] via-transparent to-primary/[0.02] py-16 overflow-hidden">
+        <section className="relative border-y bg-gradient-to-br from-primary/[0.03] via-transparent to-primary/[0.02] py-20 overflow-hidden">
           <div className="container relative mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="mb-10 text-center">
-              <h2 className="text-3xl font-bold">Explore by Subject</h2>
-              <p className="mt-2 text-muted-foreground">Dive into mathematics or physics and discover proofs organized by topic</p>
+            <div className="mb-12 text-center">
+              <div className="section-label mb-4">EXPLORE SUBJECTS</div>
+              <h2 className="text-3xl font-bold sm:text-4xl font-display tracking-wide">Choose Your Path</h2>
+              <p className="mt-3 text-muted-foreground max-w-lg mx-auto font-serif">
+                Dive into mathematics or physics and discover proofs organized by topic
+              </p>
             </div>
-            <div className="grid gap-8 md:grid-cols-2">
+            <div className="grid gap-8 md:grid-cols-2 max-w-4xl mx-auto">
               <Link href="/subjects?category=MATHEMATICS" className="group">
-                <Card className="relative overflow-hidden border-2 border-transparent transition-all duration-300 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5">
-                  <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <Card className="relative overflow-hidden border border-primary/10 transition-all duration-500 hover:border-primary/30 hover:shadow-xl hover:shadow-primary/10">
+                  <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.06] via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  <div className="absolute -top-20 -right-20 h-40 w-40 rounded-full bg-primary/[0.04] blur-3xl group-hover:bg-primary/[0.08] transition-all duration-500" />
                   <CardContent className="relative p-8">
-                    <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-primary/10 to-primary/5 text-primary group-hover:scale-110 group-hover:from-primary/20 group-hover:to-primary/10 transition-all duration-300">
+                    <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-primary/10 to-primary/5 text-primary group-hover:scale-110 group-hover:shadow-lg group-hover:shadow-primary/20 transition-all duration-300">
                       <Sigma className="h-8 w-8" />
                     </div>
-                    <h3 className="mb-2 text-2xl font-bold">Mathematics</h3>
-                    <p className="mb-4 text-muted-foreground">
+                    <h3 className="mb-2 text-2xl font-bold font-display tracking-wide">Mathematics</h3>
+                    <p className="mb-4 text-muted-foreground font-serif">
                       {mathSubjects.length} subjects &middot; {mathSubjects.reduce((a, s) => a + s._count.proofs, 0)} proofs
                     </p>
                     <div className="flex flex-wrap gap-2">
@@ -99,21 +102,22 @@ export default async function HomePage() {
                         </span>
                       ))}
                     </div>
-                    <div className="mt-4 flex items-center gap-1 text-sm font-medium text-primary opacity-0 transition-opacity group-hover:opacity-100">
+                    <div className="mt-5 flex items-center gap-1 text-sm font-medium text-primary opacity-0 transition-all group-hover:opacity-100 group-hover:translate-x-1">
                       Browse Mathematics <ArrowRight className="h-3 w-3" />
                     </div>
                   </CardContent>
                 </Card>
               </Link>
-                <Link href="/subjects?category=PHYSICS" className="group">
-                <Card className="relative overflow-hidden border-2 border-transparent transition-all duration-300 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5">
-                  <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <Link href="/subjects?category=PHYSICS" className="group">
+                <Card className="relative overflow-hidden border border-primary/10 transition-all duration-500 hover:border-primary/30 hover:shadow-xl hover:shadow-primary/10">
+                  <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.06] via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  <div className="absolute -top-20 -right-20 h-40 w-40 rounded-full bg-primary/[0.04] blur-3xl group-hover:bg-primary/[0.08] transition-all duration-500" />
                   <CardContent className="relative p-8">
-                    <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-primary/10 to-primary/5 text-primary group-hover:scale-110 group-hover:from-primary/20 group-hover:to-primary/10 transition-all duration-300">
+                    <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-primary/10 to-primary/5 text-primary group-hover:scale-110 group-hover:shadow-lg group-hover:shadow-primary/20 transition-all duration-300">
                       <Atom className="h-8 w-8" />
                     </div>
-                    <h3 className="mb-2 text-2xl font-bold">Physics</h3>
-                    <p className="mb-4 text-muted-foreground">
+                    <h3 className="mb-2 text-2xl font-bold font-display tracking-wide">Physics</h3>
+                    <p className="mb-4 text-muted-foreground font-serif">
                       {physicsSubjects.length} subjects &middot; {physicsSubjects.reduce((a, s) => a + s._count.proofs, 0)} proofs
                     </p>
                     <div className="flex flex-wrap gap-2">
@@ -123,7 +127,7 @@ export default async function HomePage() {
                         </span>
                       ))}
                     </div>
-                    <div className="mt-4 flex items-center gap-1 text-sm font-medium text-primary opacity-0 transition-opacity group-hover:opacity-100">
+                    <div className="mt-5 flex items-center gap-1 text-sm font-medium text-primary opacity-0 transition-all group-hover:opacity-100 group-hover:translate-x-1">
                       Browse Physics <ArrowRight className="h-3 w-3" />
                     </div>
                   </CardContent>
@@ -134,18 +138,20 @@ export default async function HomePage() {
         </section>
       </ScrollReveal>
 
+      {/* Featured Proofs */}
       {featured.length > 0 && (
         <ScrollReveal delay={100}>
-          <section className="py-16">
+          <section className="py-20">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="mb-10 flex items-center justify-between">
+              <div className="mb-12 flex items-end justify-between">
                 <div>
-                  <h2 className="text-3xl font-bold">Featured Proofs</h2>
-                  <p className="mt-1 text-muted-foreground">Most popular and recent proofs from our community</p>
+                  <div className="section-label mb-3">FEATURED PROOFS</div>
+                  <h2 className="text-3xl font-bold sm:text-4xl font-display tracking-wide">Popular &amp; Recent</h2>
+                  <p className="mt-2 text-muted-foreground font-serif">Most popular and recent proofs from our community</p>
                 </div>
                 <Link href="/proofs">
-                  <Button variant="ghost" className="gap-2">
-                    View all <ArrowRight className="h-4 w-4" />
+                  <Button variant="ghost" className="gap-2 group">
+                    View all <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
                   </Button>
                 </Link>
               </div>
@@ -159,26 +165,33 @@ export default async function HomePage() {
         </ScrollReveal>
       )}
 
+      {/* How It Works */}
       <ScrollReveal delay={100}>
-        <section className="border-y bg-gradient-to-l from-primary/[0.02] via-transparent to-primary/[0.01] py-16">
+        <section className="border-y bg-gradient-to-l from-primary/[0.02] via-transparent to-primary/[0.01] py-20">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="mx-auto max-w-4xl text-center">
-              <h2 className="text-3xl font-bold">How It Works</h2>
-              <p className="mt-2 text-muted-foreground">A simple process for sharing and verifying mathematical knowledge</p>
+              <div className="section-label mb-4">HOW IT WORKS</div>
+              <h2 className="text-3xl font-bold sm:text-4xl font-display tracking-wide">Simple Three-Step Process</h2>
+              <p className="mt-3 text-muted-foreground max-w-lg mx-auto font-serif">
+                A simple process for sharing and verifying mathematical knowledge
+              </p>
             </div>
-            <div className="mt-12 grid gap-8 md:grid-cols-3">
+            <div className="mt-14 grid gap-8 md:grid-cols-3 max-w-5xl mx-auto">
               {[
-                { icon: BookOpen, title: 'Explore', desc: 'Browse a growing collection of proofs across mathematics and physics, organized by subject and topic.', color: 'from-primary/10 to-primary/5 text-primary' },
-                { icon: Sparkles, title: 'Submit', desc: 'Share your own proofs with the community. Use LaTeX for beautiful mathematical notation.', color: 'from-violet-400/20 to-violet-400/10 text-primary' },
-                { icon: Users, title: 'Discuss', desc: 'Engage with proofs through comments and replies. Help improve and verify community submissions.', color: 'from-primary/10 to-violet-400/10 text-primary' },
-              ].map((item) => (
-                <Card key={item.title} className="border-0 bg-transparent text-center shadow-none group">
+                { icon: BookOpen, title: 'Explore', desc: 'Browse a growing collection of proofs across mathematics and physics, organized by subject and topic.' },
+                { icon: Sparkles, title: 'Submit', desc: 'Share your own proofs with the community. Use LaTeX for beautiful mathematical notation.' },
+                { icon: Users, title: 'Discuss', desc: 'Engage with proofs through comments and replies. Help improve and verify community submissions.' },
+              ].map((item, i) => (
+                <Card key={item.title} className="relative border-0 bg-transparent text-center shadow-none group">
                   <CardContent className="p-6">
-                    <div className={`mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br ${item.color} group-hover:scale-110 transition-transform duration-300`}>
+                    <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-primary/10 to-violet-500/10 text-primary group-hover:scale-110 group-hover:shadow-lg group-hover:shadow-primary/20 transition-all duration-300">
                       <item.icon className="h-7 w-7" />
                     </div>
-                    <h3 className="mb-2 text-xl font-bold">{item.title}</h3>
-                    <p className="text-muted-foreground">{item.desc}</p>
+                    <div className="mx-auto mb-3 flex h-7 w-7 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">
+                      {i + 1}
+                    </div>
+                    <h3 className="mb-2 text-xl font-bold font-display tracking-wide">{item.title}</h3>
+                    <p className="text-muted-foreground font-serif leading-relaxed">{item.desc}</p>
                   </CardContent>
                 </Card>
               ))}
@@ -187,19 +200,21 @@ export default async function HomePage() {
         </section>
       </ScrollReveal>
 
+      {/* CTA */}
       <ScrollReveal delay={200}>
-        <section className="py-16">
+        <section className="py-20">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <Card className="relative overflow-hidden border-border/50 bg-gradient-to-br from-primary/[0.03] via-background to-primary/[0.02]">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-bl from-primary/[0.06] to-transparent rounded-full blur-3xl" />
-              <div className="absolute bottom-0 left-0 w-64 h-64 bg-gradient-to-tr from-primary/[0.06] to-transparent rounded-full blur-3xl" />
-              <CardContent className="relative flex flex-col items-center justify-between gap-6 p-10 md:flex-row">
+            <Card className="relative overflow-hidden border-primary/10 bg-gradient-to-br from-primary/[0.04] via-background to-primary/[0.02]">
+              <div className="absolute top-0 right-0 w-72 h-72 bg-gradient-to-bl from-primary/[0.08] to-transparent rounded-full blur-3xl" />
+              <div className="absolute bottom-0 left-0 w-72 h-72 bg-gradient-to-tr from-primary/[0.08] to-transparent rounded-full blur-3xl" />
+              <CardContent className="relative flex flex-col items-center justify-between gap-8 p-12 md:flex-row">
                 <div>
-                  <h2 className="text-2xl font-bold">Ready to contribute?</h2>
-                  <p className="mt-1 text-muted-foreground">Share your knowledge with the community and help advance mathematical understanding.</p>
+                  <div className="section-label mb-3">GET INVOLVED</div>
+                  <h2 className="text-2xl font-bold font-display tracking-wide">Ready to contribute?</h2>
+                  <p className="mt-2 text-muted-foreground font-serif">Share your knowledge with the community and help advance mathematical understanding.</p>
                 </div>
                 <Link href="/submit">
-                  <Button size="lg" className="gap-2 shrink-0 shadow-lg shadow-primary/20">
+                  <Button size="lg" className="gap-2 shrink-0 shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-shadow">
                     <Sparkles className="h-5 w-5" />
                     Submit a Proof
                   </Button>

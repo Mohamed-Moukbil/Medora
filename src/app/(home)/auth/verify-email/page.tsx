@@ -18,7 +18,7 @@ export default async function VerifyEmailPage({
         <Card className="w-full max-w-md">
           <CardContent className="p-6 text-center">
             <XCircle className="mx-auto h-12 w-12 text-destructive" />
-            <h1 className="mt-4 text-xl font-semibold">Invalid link</h1>
+            <h1 className="mt-4 text-xl font-semibold font-display tracking-wide">Invalid link</h1>
             <p className="mt-2 text-muted-foreground">This verification link is missing or invalid.</p>
             <Link href="/auth/signin">
               <Button className="mt-6">Go to sign in</Button>
@@ -36,7 +36,7 @@ export default async function VerifyEmailPage({
         <Card className="w-full max-w-md">
           <CardContent className="p-6 text-center">
             <XCircle className="mx-auto h-12 w-12 text-destructive" />
-            <h1 className="mt-4 text-xl font-semibold">Verification failed</h1>
+            <h1 className="mt-4 text-xl font-semibold font-display tracking-wide">Verification failed</h1>
             <p className="mt-2 text-muted-foreground">
               This link is invalid or has expired. Request a new verification email from the sign-in page.
             </p>

@@ -24,7 +24,7 @@ export function Header() {
     <header className="sticky top-0 z-50 w-full border-b bg-background/70 backdrop-blur-xl supports-[backdrop-filter]:bg-background/50">
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8" aria-label="Main navigation">
         <div className="flex items-center gap-8">
-          <Link href="/" className="flex items-center gap-2 text-lg font-semibold tracking-tight text-foreground" aria-label="Medora Home">
+            <Link href="/" className="flex items-center gap-2 font-display text-xl font-bold tracking-wide text-foreground" aria-label="Medora Home">
             <BookOpen className="h-5 w-5" />
             <span className="hidden sm:block">Medora</span>
           </Link>

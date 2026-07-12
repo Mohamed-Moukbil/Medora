@@ -11,8 +11,9 @@ export default async function RegisterPage() {
     <div className="container mx-auto flex min-h-[calc(100vh-8rem)] items-center justify-center px-4 py-12">
       <div className="w-full max-w-md">
         <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold">Create an account</h1>
-          <p className="mt-2 text-muted-foreground">Join the community and start sharing proofs</p>
+          <div className="section-label mb-3">GET STARTED</div>
+          <h1 className="text-3xl font-bold font-display tracking-wide">Create an account</h1>
+          <p className="mt-2 text-muted-foreground font-serif">Join the community and start sharing proofs</p>
         </div>
         <RegisterForm />
       </div>

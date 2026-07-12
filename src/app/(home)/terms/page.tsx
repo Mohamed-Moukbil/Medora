@@ -5,9 +5,13 @@ export const metadata: Metadata = { title: 'Terms of Service', description: 'Med
 export default function TermsPage() {
   return (
     <div className="container mx-auto px-4 py-12 sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-3xl prose prose-lg">
-        <h1>Terms of Service</h1>
-        <p className="text-muted-foreground">Last updated: July 2026</p>
+      <div className="mx-auto max-w-3xl">
+        <div className="mb-10">
+          <div className="section-label mb-3">LEGAL</div>
+          <h1 className="text-4xl font-bold font-display tracking-wide">Terms of Service</h1>
+          <p className="mt-2 text-muted-foreground font-serif">Last updated: July 2026</p>
+        </div>
+        <div className="prose prose-lg">
 
         <h2>Acceptance of Terms</h2>
         <p>
@@ -44,6 +48,7 @@ export default function TermsPage() {
           For questions about these terms, contact us at{' '}
            the contact form on our website.
         </p>
+      </div>
       </div>
     </div>
   )

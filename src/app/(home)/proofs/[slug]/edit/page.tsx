@@ -21,8 +21,9 @@ export default async function EditProofPage({ params }: { params: { slug: string
     <div className="container mx-auto px-4 py-12 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-3xl">
         <div className="mb-10">
-          <h1 className="text-4xl font-bold">Edit Proof</h1>
-          <p className="mt-2 text-lg text-muted-foreground">Update your proof</p>
+          <div className="section-label mb-3">EDIT</div>
+          <h1 className="text-4xl font-bold font-display tracking-wide">Edit Proof</h1>
+          <p className="mt-2 text-lg text-muted-foreground font-serif">Update your proof</p>
         </div>
         <EditProofForm
           proof={proof as unknown as { id: string; slug: string; title: string; content: string; description: string | null; subjectId: string; subSubjectId: string | null; tags?: { id: string; name: string; slug: string }[] }}

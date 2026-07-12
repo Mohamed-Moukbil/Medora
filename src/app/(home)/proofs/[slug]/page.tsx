@@ -93,10 +93,10 @@ export default async function ProofPage({ params }: { params: { slug: string } }
           ))}
         </div>
 
-        <h1 className="text-4xl font-bold tracking-tight md:text-5xl">{proof.title}</h1>
+        <h1 className="text-4xl font-bold font-display tracking-wide md:text-5xl">{proof.title}</h1>
 
         {proof.description && (
-          <p className="mt-4 text-lg text-muted-foreground">{proof.description}</p>
+          <p className="mt-4 text-lg text-muted-foreground font-serif leading-relaxed">{proof.description}</p>
         )}
 
         <div className="mt-4 flex flex-wrap items-center gap-3">
@@ -162,7 +162,8 @@ export default async function ProofPage({ params }: { params: { slug: string } }
         <>
           <Separator className="my-12" />
           <div className="mb-8">
-            <h2 className="mb-6 text-2xl font-bold">Related Proofs</h2>
+            <div className="section-label mb-3">RELATED</div>
+            <h2 className="mb-6 text-2xl font-bold font-display tracking-wide">Related Proofs</h2>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {relatedProofs.map(related => (
                 <ProofCard key={related.id} proof={{ ...related, tags: related.tags.map(t => t.tag) } as unknown as ProofCardProof} />

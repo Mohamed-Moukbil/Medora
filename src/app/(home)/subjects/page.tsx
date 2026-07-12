@@ -20,8 +20,9 @@ export default async function SubjectsPage({
   return (
     <div className="container mx-auto px-4 py-12 sm:px-6 lg:px-8">
       <div className="mb-10">
-        <h1 className="text-4xl font-bold">Subjects</h1>
-        <p className="mt-2 text-lg text-muted-foreground">Browse proofs organized by mathematical and physics disciplines</p>
+        <div className="section-label mb-3">EXPLORE</div>
+        <h1 className="text-4xl font-bold font-display tracking-wide">Subjects</h1>
+        <p className="mt-2 text-lg text-muted-foreground font-serif">Browse proofs organized by mathematical and physics disciplines</p>
       </div>
 
       <div className="mb-8 flex gap-2">

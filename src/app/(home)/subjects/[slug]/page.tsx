@@ -52,8 +52,9 @@ export default async function SubjectPage({
             <BookOpen className="h-7 w-7" style={{ color: subject.color }} />
           </div>
           <div>
-            <h1 className="text-4xl font-bold">{subject.name}</h1>
-            {subject.description && <p className="mt-1 text-lg text-muted-foreground">{subject.description}</p>}
+            <div className="section-label mb-2">SUBJECT</div>
+            <h1 className="text-4xl font-bold font-display tracking-wide">{subject.name}</h1>
+            {subject.description && <p className="mt-1 text-lg text-muted-foreground font-serif">{subject.description}</p>}
             <p className="mt-1 text-sm text-muted-foreground">{subject._count.proofs} proofs across {subject.subSubjects.length} topics</p>
           </div>
         </div>

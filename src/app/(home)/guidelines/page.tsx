@@ -72,8 +72,9 @@ export default function GuidelinesPage() {
     <div className="container mx-auto px-4 py-12 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-4xl">
         <div className="mb-10 text-center">
-          <h1 className="text-4xl font-bold">Community Guidelines</h1>
-          <p className="mt-2 text-lg text-muted-foreground">
+          <div className="section-label mb-3">RULES</div>
+          <h1 className="text-4xl font-bold font-display tracking-wide">Community Guidelines</h1>
+          <p className="mt-2 text-lg text-muted-foreground font-serif">
             Help us maintain a high-quality platform for mathematical and physics proofs
           </p>
         </div>
@@ -88,7 +89,7 @@ export default function GuidelinesPage() {
                     <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
                       <Icon className="h-5 w-5" />
                     </div>
-                    <h2 className="text-xl font-semibold">{section.title}</h2>
+                    <h2 className="text-xl font-semibold font-display tracking-wide">{section.title}</h2>
                   </div>
                   <ul className="space-y-2">
                     {section.items.map((item, i) => (
@@ -107,8 +108,8 @@ export default function GuidelinesPage() {
         <Separator className="my-12" />
 
         <div className="rounded-lg border bg-muted/30 p-8 text-center">
-          <h2 className="text-2xl font-bold">Have questions?</h2>
-          <p className="mt-2 text-muted-foreground">
+          <h2 className="text-2xl font-bold font-display tracking-wide">Have questions?</h2>
+          <p className="mt-2 text-muted-foreground font-serif">
             If you have any questions about the guidelines or need clarification,
             please reach out to our moderation team.
           </p>

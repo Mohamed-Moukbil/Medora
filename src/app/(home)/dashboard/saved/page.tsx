@@ -17,8 +17,9 @@ export default async function SavedProofsPage() {
     <div className="container mx-auto px-4 py-12 sm:px-6 lg:px-8">
       <div className="mb-10 flex items-center justify-between">
         <div>
-          <h1 className="text-4xl font-bold">Saved Proofs</h1>
-          <p className="mt-2 text-lg text-muted-foreground">Proofs you have bookmarked</p>
+          <div className="section-label mb-3">BOOKMARKS</div>
+          <h1 className="text-4xl font-bold font-display tracking-wide">Saved Proofs</h1>
+          <p className="mt-2 text-lg text-muted-foreground font-serif">Proofs you have bookmarked</p>
         </div>
         <Link href="/proofs">
           <Button className="gap-2">
