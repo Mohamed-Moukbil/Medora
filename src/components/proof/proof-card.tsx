@@ -29,8 +29,8 @@ export interface ProofCardProps {
 
 const typeConfig: Record<string, { label: string; icon: React.ElementType; className: string }> = {
   OFFICIAL: { label: 'Official', icon: ShieldCheck, className: 'bg-primary/10 text-primary border-primary/20' },
-  COMMUNITY: { label: 'Community', icon: Users, className: 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20' },
-  PENDING: { label: 'Pending', icon: Users, className: 'bg-yellow-500/10 text-yellow-600 dark:text-yellow-400 border-yellow-500/20' },
+  COMMUNITY: { label: 'Community', icon: Users, className: 'bg-sky-500/10 text-sky-600 dark:text-sky-400 border-sky-500/20' },
+  PENDING: { label: 'Pending', icon: Users, className: 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20' },
   REJECTED: { label: 'Rejected', icon: XCircle, className: 'bg-destructive/10 text-destructive border-destructive/20' },
 }
 

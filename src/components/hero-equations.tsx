@@ -11,11 +11,11 @@ interface Equation {
 const equations: Equation[] = [
   { tex: 'e^{i\\pi} + 1 = 0', x: '12%', y: '8%', size: 'text-lg', color: '--muted-foreground' },
   { tex: 'E = mc^2', x: '80%', y: '5%', size: 'text-2xl', color: '--primary' },
-  { tex: '\\nabla \\cdot \\mathbf{E} = \\frac{\\rho}{\\varepsilon_0}', x: '5%', y: '48%', size: 'text-base', color: '--muted-foreground' },
+  { tex: '\\nabla \\cdot \\mathbf{E} = \\frac{\\rho}{\\varepsilon_0}', x: '5%', y: '48%', size: 'text-base', color: '260 40% 50%' },
   { tex: '\\int_{-\\infty}^{\\infty} e^{-x^2}\\,dx = \\sqrt{\\pi}', x: '82%', y: '44%', size: 'text-lg', color: '--primary' },
-  { tex: 'i\\hbar\\frac{\\partial}{\\partial t}|\\psi\\rangle = \\hat{H}|\\psi\\rangle', x: '8%', y: '80%', size: 'text-base', color: '--muted-foreground' },
+  { tex: 'i\\hbar\\frac{\\partial}{\\partial t}|\\psi\\rangle = \\hat{H}|\\psi\\rangle', x: '8%', y: '80%', size: 'text-base', color: '260 40% 50%' },
   { tex: '\\zeta(s) = \\sum_{n=1}^{\\infty} \\frac{1}{n^s}', x: '85%', y: '78%', size: 'text-lg', color: '--primary' },
-  { tex: 'a^2 + b^2 = c^2', x: '45%', y: '88%', size: 'text-xl', color: '--muted-foreground' },
+  { tex: 'a^2 + b^2 = c^2', x: '45%', y: '88%', size: 'text-xl', color: '260 40% 50%' },
   { tex: '\\Delta x \\Delta p \\geq \\frac{\\hbar}{2}', x: '50%', y: '10%', size: 'text-base', color: '--primary' },
 ]
 

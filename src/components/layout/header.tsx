@@ -21,20 +21,20 @@ export function Header() {
   ]
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-lg supports-[backdrop-filter]:bg-background/60">
-      <nav className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8" aria-label="Main navigation">
+    <header className="sticky top-0 z-50 w-full border-b bg-background/70 backdrop-blur-xl supports-[backdrop-filter]:bg-background/50">
+      <nav className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8" aria-label="Main navigation">
         <div className="flex items-center gap-8">
-          <Link href="/" className="flex items-center gap-2 text-xl font-bold text-foreground" aria-label="Medora Home">
-            <BookOpen className="h-7 w-7" />
+          <Link href="/" className="flex items-center gap-2 text-lg font-semibold tracking-tight text-foreground" aria-label="Medora Home">
+            <BookOpen className="h-5 w-5" />
             <span className="hidden sm:block">Medora</span>
           </Link>
 
-          <div className="hidden md:flex md:gap-6">
+          <div className="hidden md:flex md:gap-5">
             {navigation.map((item) => (
               <Link
                 key={item.name}
                 href={item.href}
-                className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+                className="text-sm font-medium text-muted-foreground/80 transition-colors hover:text-foreground"
               >
                 {item.name}
               </Link>

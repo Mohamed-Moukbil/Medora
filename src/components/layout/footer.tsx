@@ -5,34 +5,32 @@ import { Github, Twitter, Mail } from 'lucide-react'
 
 export function Footer() {
   return (
-    <footer className="border-t bg-muted/50">
-      <div className="container mx-auto px-4 py-12 md:py-16 lg:px-8">
+    <footer className="border-t bg-muted/30">
+      <div className="container mx-auto px-4 py-10 md:py-14 lg:px-8">
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
           <div className="space-y-4">
-            <Link href="/" className="flex items-center gap-2 font-bold text-xl">
-              <span className="text-primary">⚡</span>
+            <Link href="/" className="flex items-center gap-2 font-semibold text-lg tracking-tight">
               Medora
             </Link>
-            <p className="text-sm text-muted-foreground max-w-xs">
-              A beautiful platform for sharing and discovering mathematical proofs.
-              Built with LaTeX rendering in mind.
+            <p className="text-sm text-muted-foreground max-w-xs leading-relaxed">
+              A platform for sharing and discovering mathematical proofs with beautiful LaTeX rendering.
             </p>
-            <div className="flex gap-4">
-              <a href="https://github.com/Mohamed-Moukbil/Medora" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground transition-colors" aria-label="GitHub">
-                <Github className="h-5 w-5" />
+            <div className="flex gap-3">
+              <a href="https://github.com/Mohamed-Moukbil/Medora" target="_blank" rel="noopener noreferrer" className="text-muted-foreground/60 hover:text-foreground transition-colors" aria-label="GitHub">
+                <Github className="h-4 w-4" />
               </a>
-              <a href="https://x.com/Medora_Web" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground transition-colors" aria-label="Twitter">
-                <Twitter className="h-5 w-5" />
+              <a href="https://x.com/Medora_Web" target="_blank" rel="noopener noreferrer" className="text-muted-foreground/60 hover:text-foreground transition-colors" aria-label="Twitter">
+                <Twitter className="h-4 w-4" />
               </a>
-              <a href="mailto:medora.vip" className="text-muted-foreground hover:text-foreground transition-colors" aria-label="Email">
-                <Mail className="h-5 w-5" />
+              <a href="mailto:medora.vip" className="text-muted-foreground/60 hover:text-foreground transition-colors" aria-label="Email">
+                <Mail className="h-4 w-4" />
               </a>
             </div>
           </div>
 
-          <nav className="space-y-4">
-            <h3 className="font-semibold">Explore</h3>
-            <ul className="space-y-2 text-sm text-muted-foreground">
+          <nav className="space-y-3">
+            <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Explore</h3>
+            <ul className="space-y-2 text-sm text-muted-foreground/80">
               <li><Link href="/subjects" className="hover:text-foreground transition-colors">Subjects</Link></li>
               <li><Link href="/proofs" className="hover:text-foreground transition-colors">All Proofs</Link></li>
               <li><Link href="/proofs?type=OFFICIAL" className="hover:text-foreground transition-colors">Official Proofs</Link></li>
@@ -40,9 +38,9 @@ export function Footer() {
             </ul>
           </nav>
 
-          <nav className="space-y-4">
-            <h3 className="font-semibold">Community</h3>
-            <ul className="space-y-2 text-sm text-muted-foreground">
+          <nav className="space-y-3">
+            <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Community</h3>
+            <ul className="space-y-2 text-sm text-muted-foreground/80">
               <li><Link href="/submit" className="hover:text-foreground transition-colors">Submit a Proof</Link></li>
               <li><Link href="/guidelines" className="hover:text-foreground transition-colors">Guidelines</Link></li>
               <li><Link href="/leaderboard" className="hover:text-foreground transition-colors">Leaderboard</Link></li>
@@ -50,9 +48,9 @@ export function Footer() {
             </ul>
           </nav>
 
-          <nav className="space-y-4">
-            <h3 className="font-semibold">Resources</h3>
-            <ul className="space-y-2 text-sm text-muted-foreground">
+          <nav className="space-y-3">
+            <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Resources</h3>
+            <ul className="space-y-2 text-sm text-muted-foreground/80">
               <li><Link href="/about" className="hover:text-foreground transition-colors">About</Link></li>
               <li><Link href="/privacy" className="hover:text-foreground transition-colors">Privacy Policy</Link></li>
               <li><Link href="/terms" className="hover:text-foreground transition-colors">Terms of Service</Link></li>
@@ -61,11 +59,11 @@ export function Footer() {
           </nav>
         </div>
 
-        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t pt-8 md:flex-row">
-          <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} Medora. All rights reserved.
+        <div className="mt-10 flex flex-col items-center justify-between gap-4 border-t pt-6 md:flex-row">
+          <p className="text-xs text-muted-foreground/60">
+            &copy; {new Date().getFullYear()} Medora. All rights reserved.
           </p>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-xs text-muted-foreground/60">
             Built with Next.js, Prisma, and KaTeX
           </p>
         </div>
