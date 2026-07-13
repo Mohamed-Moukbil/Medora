@@ -1,13 +1,13 @@
 import type { Metadata, Viewport } from 'next'
-import { Space_Grotesk, JetBrains_Mono, Newsreader, Cinzel_Decorative } from 'next/font/google'
+import { Outfit, Fira_Code, Cormorant, Fraunces } from 'next/font/google'
 import './globals.css'
 import 'katex/dist/katex.min.css'
 import { Analytics } from "@vercel/analytics/next"
 
-const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], variable: '--font-sans', display: 'swap' })
-const newsreader = Newsreader({ subsets: ['latin'], variable: '--font-serif', display: 'swap' })
-const jetbrainsMono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-mono', display: 'swap' })
-const cinzelDecorative = Cinzel_Decorative({ subsets: ['latin'], weight: ['400', '700'], variable: '--font-display', display: 'swap' })
+const outfit = Outfit({ subsets: ['latin'], variable: '--font-sans', display: 'swap' })
+const cormorant = Cormorant({ subsets: ['latin'], variable: '--font-serif', display: 'swap' })
+const firaCode = Fira_Code({ subsets: ['latin'], variable: '--font-mono', display: 'swap' })
+const fraunces = Fraunces({ subsets: ['latin'], variable: '--font-display', display: 'swap' })
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://medora.vip'),
@@ -69,11 +69,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-      </head>
-      <body className={`${spaceGrotesk.variable} ${newsreader.variable} ${jetbrainsMono.variable} ${cinzelDecorative.variable} font-sans antialiased`}>
+      <body className={`${outfit.variable} ${cormorant.variable} ${firaCode.variable} ${fraunces.variable} font-sans antialiased`}>
         {children}
         <Analytics />
       </body>
